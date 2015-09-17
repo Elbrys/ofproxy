@@ -5,7 +5,9 @@
 */bin
 */build
 */target
+target
 /.gradle
+*/META-INF
 /build.version
 /publish
 /.idea
