@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoRequestMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowRemovedMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
@@ -40,7 +41,7 @@ public final class TypeToClassMapInit {
 //        helper.registerTypeToClass((short) 8, GetConfigOutput.class);
         helper.registerTypeToClass((short) 9, SetConfigInput.class);
 //        helper.registerTypeToClass((short) 10, PacketInMessage.class);
-//        helper.registerTypeToClass((short) 11, FlowRemovedMessage.class);
+        helper.registerTypeToClass((short) 11, FlowRemovedMessage.class);
 //        helper.registerTypeToClass((short) 12, PortStatusMessage.class);
         helper.registerTypeToClass((short) 13, PacketOutInput.class);
         helper.registerTypeToClass((short) 14, FlowModInput.class);

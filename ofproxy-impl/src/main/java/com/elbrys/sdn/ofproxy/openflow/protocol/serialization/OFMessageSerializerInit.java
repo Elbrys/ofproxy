@@ -14,6 +14,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.factories.OF10F
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.OF10HelloInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.OF10PacketOutInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.CommonMessageRegistryHelper;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.service.rev130819.FlowRemoved;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoReplyInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutput;
@@ -22,6 +23,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInput;
 
 import com.elbrys.sdn.ofproxy.openflow.protocol.serialization.factories.OF10FeatureReplyOutputFactory;
+import com.elbrys.sdn.ofproxy.openflow.protocol.serialization.factories.OF10FlowRemovedOutputFactory;
 import com.elbrys.sdn.ofproxy.openflow.protocol.serialization.factories.OF10StatsReplyOutputFactory;
 
 public final class OFMessageSerializerInit {
@@ -38,6 +40,7 @@ public final class OFMessageSerializerInit {
         registryHelper.registerSerializer(EchoReplyInput.class, new EchoReplyInputMessageFactory());
         registryHelper.registerSerializer(GetFeaturesOutput.class, new OF10FeatureReplyOutputFactory());
         registryHelper.registerSerializer(PacketOutInput.class, new OF10PacketOutInputMessageFactory());
+        registryHelper.registerSerializer(FlowRemoved.class, new OF10FlowRemovedOutputFactory());
         registryHelper.registerSerializer(FlowModInput.class, new OF10FlowModInputMessageFactory());
         registryHelper.registerSerializer(MultipartReplyMessage.class, new OF10StatsReplyOutputFactory());
  //        registryHelper.registerSerializer(BarrierInput.class, new OF10BarrierInputMessageFactory());

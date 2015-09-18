@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.service.rev130819.SwitchFlowRemoved;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -39,11 +38,6 @@ public final class ClientList{
     public void onPacketIn(PacketReceived pkt) {
         // TODO Forward PacketIn message to client
         LOG.debug("Forward PacketIn message to targeted clients.");
-    }
-
-    public void onFlowRemoved(SwitchFlowRemoved flowRemoved) {
-        // TODO Forward FlowRemoved message to client
-        LOG.debug("Forward FlowRemoved message to targeted clients.");
     }
 
     public void stop() {
