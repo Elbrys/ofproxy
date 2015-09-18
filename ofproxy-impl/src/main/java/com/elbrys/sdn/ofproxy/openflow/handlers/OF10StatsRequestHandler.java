@@ -87,6 +87,7 @@ import org.slf4j.LoggerFactory;
 
 import com.elbrys.sdn.ofproxy.Activator;
 import com.elbrys.sdn.ofproxy.openflow.Client;
+import com.elbrys.sdn.ofproxy.openflow.ClientNode;
 
 public final class OF10StatsRequestHandler {
     private final Logger LOG = LoggerFactory.getLogger(OF10StatsRequestHandler.class);
@@ -432,7 +433,7 @@ public final class OF10StatsRequestHandler {
             QueueStatsBuilder qsb = new QueueStatsBuilder();
             qsb.setDurationSec(qs.getDuration().getSecond().getValue());
             qsb.setDurationNsec(qs.getDuration().getNanosecond().getValue());
-            qsb.setPortNo(client.getPortNfromNodeConnectorId(qs.getNodeConnectorId()));
+            qsb.setPortNo(ClientNode.getPortNfromNodeConnectorId(qs.getNodeConnectorId()));
             qsb.setQueueId(qs.getQueueId().getValue());
             qsb.setTxBytes(qs.getTransmittedBytes().getValue());
             qsb.setTxPackets(qs.getTransmittedPackets().getValue());

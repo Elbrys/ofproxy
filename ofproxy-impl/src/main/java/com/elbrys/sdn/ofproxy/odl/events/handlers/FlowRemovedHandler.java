@@ -1,13 +1,12 @@
 package com.elbrys.sdn.ofproxy.odl.events.handlers;
 
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowplugin.openflow.md.core.sal.convertor.match.MatchConvertorV10Impl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.service.rev130819.SwitchFlowRemoved;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.RemovedReasonFlags;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowRemovedReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowRemovedMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowRemovedMessageBuilder;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +20,7 @@ public final class FlowRemovedHandler {
 
     public static void consume(final FlowRemovedEvent event) {
         
-        @SuppressWarnings("unchecked")
-        ClientList cl = OFProxy.getInstance().getClientList((InstanceIdentifier<Node>) event.getFlow().getNode().getValue());
+        ClientList cl = OFProxy.getInstance().getClientList(event.getNodePath());
         if (cl != null) {
             for (Client client:cl.getClients().values()) {
                 FlowRemovedMessage frm = createFlowRemoved(client, event.getFlow());
@@ -36,6 +34,8 @@ public final class FlowRemovedHandler {
     private final static FlowRemovedMessage createFlowRemoved(final Client client, final SwitchFlowRemoved fre) {
         FlowRemovedMessageBuilder frmb = new FlowRemovedMessageBuilder();
         MatchConvertorV10Impl matchConvertorV10 = new MatchConvertorV10Impl();
+        frmb.setVersion((short) EncodeConstants.OF10_VERSION_ID);
+        frmb.setXid(client.getXid());
         frmb.setMatchV10(matchConvertorV10.convert(fre.getMatch(), client.getDatapathId()));
         frmb.setCookie(fre.getCookie().getValue());
         frmb.setPriority(fre.getPriority());

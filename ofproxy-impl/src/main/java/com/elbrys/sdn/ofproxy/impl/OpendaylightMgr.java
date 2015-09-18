@@ -15,6 +15,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.elbrys.sdn.ofproxy.OFProxy;
 import com.elbrys.sdn.ofproxy.odl.FlowListener;
 import com.elbrys.sdn.ofproxy.odl.NodeListener;
 import com.elbrys.sdn.ofproxy.odl.PacketInListener;
@@ -47,7 +48,7 @@ public final class OpendaylightMgr {
                 InstanceIdentifier.builder(Nodes.class).child(Node.class)
                         .augmentation(FlowCapableNode.class).toInstance(),
                 nodeMgr, DataBroker.DataChangeScope.SUBTREE);
-        pktMgr = new PacketInListener();
+        pktMgr = new PacketInListener(this);
         packetInRegistration = sess.getSALService(NotificationService.class)
                 .registerNotificationListener(pktMgr);
         flowMgr = new FlowListener(this);
@@ -87,6 +88,11 @@ public final class OpendaylightMgr {
 	}
 
     public void odlEvent(final ODLEvent odlEvent) {
+
+        if (odlEvent.isCheckNode() && null == OFProxy.getInstance().getClientList(odlEvent.getNodePath())) {
+            // Check node for qualified events. Skip event if node is not exists
+        }
+
         if (!odlEvents.offer(odlEvent)) {
             LOG.warn("Unable to queue ODL event. Event {}", odlEvent);
         }

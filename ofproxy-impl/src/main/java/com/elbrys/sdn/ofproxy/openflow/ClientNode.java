@@ -61,7 +61,7 @@ public class ClientNode {
         return new BigInteger(dpidStr);
     }
 
-    public long getPortNfromNodeConnectorId(final NodeConnectorId nodeConnectorId) {
+    public static long getPortNfromNodeConnectorId(final NodeConnectorId nodeConnectorId) {
         String ncId = nodeConnectorId.getValue();
         // TODO replace with something more intelligent. Stolen from OFPLuging
         String[] split = ncId.split(":");

@@ -74,6 +74,9 @@ public final class OFProxy {
     }
 
     public ClientList getClientList(InstanceIdentifier<Node> nodePath) {
+        if (nodePath == null) {
+            return null;
+        }
         return clients.get(nodePath);
     }
 

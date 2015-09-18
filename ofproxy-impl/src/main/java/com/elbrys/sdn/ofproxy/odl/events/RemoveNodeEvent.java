@@ -10,4 +10,13 @@ public class RemoveNodeEvent implements ODLEvent {
     @Getter
     InstanceIdentifier<Node> node;
 
+    @Override
+    public InstanceIdentifier<Node> getNodePath() {
+        return node;
+    }
+
+    @Override
+    public boolean isCheckNode() {
+        return true;
+    }
 }

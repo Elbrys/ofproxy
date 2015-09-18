@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import com.elbrys.sdn.ofproxy.odl.events.AddNodeEvent;
 import com.elbrys.sdn.ofproxy.odl.events.FlowRemovedEvent;
 import com.elbrys.sdn.ofproxy.odl.events.ODLEvent;
+import com.elbrys.sdn.ofproxy.odl.events.PacketInEvent;
 import com.elbrys.sdn.ofproxy.odl.events.RemoveNodeEvent;
 
 public final class ODLEventHandler {
@@ -23,6 +24,8 @@ public final class ODLEventHandler {
                 RemoveNodeHandler.consume((RemoveNodeEvent) msg);
             } else if (msg instanceof FlowRemovedEvent) {
                 FlowRemovedHandler.consume((FlowRemovedEvent) msg);
+            } else if (msg instanceof PacketInEvent) {
+                PacketInHandler.consume((PacketInEvent) msg);
             } else {
                 LOG.debug(" >>>>>>>>>>>  Unexpected ODL event {}.", msg);
             }
