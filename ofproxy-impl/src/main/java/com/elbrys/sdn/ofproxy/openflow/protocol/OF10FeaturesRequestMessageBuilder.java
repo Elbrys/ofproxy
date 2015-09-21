@@ -48,12 +48,6 @@ public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10Feat
             FeaturesRequestMessageImpl impl = (FeaturesRequestMessageImpl) base;
             this.augmentation = new HashMap<>(impl.augmentation);
         }
-// TODO Fix it        
-//        else if (base instanceof AugmentationHolder) {
-//            @SuppressWarnings("unchecked")
-//            AugmentationHolder<FeaturesRequestMessage> casted =(AugmentationHolder<FeaturesRequestMessage>) base;
-//            this.augmentation = new HashMap<>(casted.augmentations());
-//        }
     }
 
     /**

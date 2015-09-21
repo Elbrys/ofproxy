@@ -54,7 +54,7 @@ public final class OFMsgHandler {
                     LOG.trace(" Received BarrierInput.");
                     // TODO ODL allows to send Barrier Request to particular node only
                     // as part of FlowMod message.
-                    LOG.trace(" ODL does npt allow to send Barrier Mesage.");
+                    LOG.trace(" ODL does not allow to send separate Barrier Mesage.");
                 } else {
                     LOG.debug(" >>>>>>>>>>>  Unexpected message {}.", om);
                 }

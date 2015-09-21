@@ -63,7 +63,6 @@ public class ClientNode {
 
     public static long getPortNfromNodeConnectorId(final NodeConnectorId nodeConnectorId) {
         String ncId = nodeConnectorId.getValue();
-        // TODO replace with something more intelligent. Stolen from OFPLuging
         String[] split = ncId.split(":");
         // If the length is just one then this cannot be the new MD-SAL
         // style node connector Id which is of the form openflow:1:3.
@@ -79,7 +78,6 @@ public class ClientNode {
             }
         }
         String portNoString = split[split.length - 1];
-        // TODO Check if there is other string ports need to be converted
         if (portNoString.equals("LOCAL")) {
             return 0xfffffffe;
         } else {
@@ -88,7 +86,6 @@ public class ClientNode {
     }
 
     public NodeConnectorId getNodeConnectorIdByPortNumber(final long long1) {
-        // TODO find correct way to find node connector ID
         Node node = getNode();
         if (node == null || node.getId() == null) {
             return null;
@@ -112,7 +109,6 @@ public class ClientNode {
      * @return Node connector reference
      */
     public NodeConnectorRef getNodeConnectorRef(final long ofPort) {
-        //  TODO add node removed
         Node node = getNode();
         if (node == null) return null;
         NodeId nodeId = node.getId();

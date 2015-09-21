@@ -46,7 +46,7 @@ public class ClientFramer extends LengthFieldBasedFrameDecoder {
         if (bb.readableBytes() < LENGTH_OF_HEADER) {
             LOGGER.debug("skipping bb - too few data for header: " + bb.readableBytes());
             LOGGER.debug("decode " + ByteBufUtils.byteBufToHexString(bb));
-            // TODO should we skip invalid bytes?
+            bb.skipBytes(bb.readableBytes());
             return null;
         }
 
@@ -54,8 +54,7 @@ public class ClientFramer extends LengthFieldBasedFrameDecoder {
         if (bb.readableBytes() < length) {
             LOGGER.debug("skipping bb - too few data for msg: " + bb.readableBytes() + " < " + length);
             LOGGER.debug("Too short. decode Fail " + ByteBufUtils.byteBufToHexString(bb));
-            // TODO should we skip invalid bytes?
-            // bb.skipBytes(bb.readableBytes());
+            bb.skipBytes(bb.readableBytes());
             return null;
         }
 

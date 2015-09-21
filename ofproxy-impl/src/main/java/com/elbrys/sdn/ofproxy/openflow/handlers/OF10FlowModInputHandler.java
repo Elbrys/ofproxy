@@ -83,7 +83,6 @@ public final class OF10FlowModInputHandler {
                 .setKey(flowKey);
 
         Match match = MatchConvertorImpl.fromOFMatchV10ToSALMatch(msg.getMatchV10(),client.getDatapathId(), OpenflowVersion.OF10);
-        // TODO verify that order of Actions is the same as in original packet
         Instructions instructions = OFToMDSalFlowConvertor.wrapOF10ActionsToInstruction(msg.getAction(), OpenflowVersion.OF10);
 
         allToCtrlFlow

@@ -72,7 +72,6 @@ public final class OpenflowMgr {
 	
 	public Client addClient(final InstanceIdentifier<Node> nodePath, final ClientConfig cfg) {
         LOG.debug("Openflow manager addClient {} {}.", nodePath, cfg);
-        // TODO create client's list
         Client sc = new Client(nodePath, cfg, inboundMsgs, this);
         executor.execute(sc);
         try {
@@ -93,11 +92,9 @@ public final class OpenflowMgr {
 
     public void send(final Client client, final DataObject ofMsg) {
         try {
-//            LOG.debug("encode  {}", ofMsg);
             ByteBuf out = client.getCtxt().alloc().buffer();
             MsgEncoder encoder = outboundMsgs.getEncoder();
             encoder.messageToBuffer(EncodeConstants.OF10_VERSION_ID, out, ofMsg);
-//            LOG.debug("outBuf {}", out);
             ClientMsg clientMsg = ClientMsg.create(client, out);
             if (!outboundMsgs.offer(clientMsg)) {
                 LOG.warn("Unable to queue outbound OF message. Client {}, OFMessage {}", clientMsg.getClient(),
@@ -109,12 +106,10 @@ public final class OpenflowMgr {
     }
 
     public void transmitPacket(final TransmitPacketInput pktOut) {
-        // TODO check future after sending PacketOut
         pps.transmitPacket(pktOut);
     }
 
     public void addFlow(final AddFlowInput flow) {
-        // TODO check future after adding flow
         fs.addFlow(flow);
     }
 }

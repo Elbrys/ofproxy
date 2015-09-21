@@ -56,7 +56,7 @@ public final class OF10PacketOutInputHandler {
         tPackBuilder.setAction(odlActions);
 
         // ODL requires egress port to be set, find output action and convert it
-        // to port number
+        // to port number. Use port number 0 if there is no OUTPUT action present 
         // FIXME It is not clear what should be done if PACKET_OUT received with
         // action DROP (no actions present)
         List<Action> actionList = pkt.getAction();
@@ -66,12 +66,6 @@ public final class OF10PacketOutInputHandler {
                 PortAction pa = ofAction.getAugmentation(PortAction.class);
                 if (pa != null) {
                     egressPortNumber = pa.getPort().getValue().intValue();
-                    // OutputActionBuilder output = new
-                    // OutputActionBuilder().setMaxLength(0xffff).setOutputNodeConnector(
-                    // client.getNodeConnectorIdByPortNumber(egressPortNumber));
-                    // retVal.add(new ActionBuilder().setOrder(0)
-                    // .setAction(new
-                    // OutputActionCaseBuilder().setOutputAction(output.build()).build()).build());
                 }
             }
         }

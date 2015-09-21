@@ -43,7 +43,7 @@ public final class PacketInHandler {
         PacketInMessageBuilder pimb = new PacketInMessageBuilder();
         pimb.setVersion((short) EncodeConstants.OF10_VERSION_ID);
         pimb.setXid(client.getXid());
-        // FIXME ODL unable to provide bufferId from PacketIn messages, so
+        // ODL is unable to provide bufferId from PacketIn messages, so
         // replace it with NO_BUFFER constant
         pimb.setBufferId(0xffffffffl);
         pimb.setInPort(getInPort(pkt));
