@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.Fl
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowFeatureCapabilityStp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowFeatureCapabilityTableStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.flow.node.SwitchFeatures;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.CommonPort.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortFeatures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.flow.capable.port.State;
@@ -89,7 +90,7 @@ public final class OF10FeaturesRequestHandler {
     private static PhyPort buildPortInfo(final FlowCapableNodeConnector fcnc) {
         
         PhyPortBuilder pb = new PhyPortBuilder();
-        pb.setPortNo(fcnc.getPortNumber().getUint32());
+        pb.setPortNo(getPortNumberFromCommonPort(fcnc.getPortNumber()));
         pb.setHwAddr(fcnc.getHardwareAddress());
         pb.setName(fcnc.getName());
         pb.setConfigV10(buildConfigV10(fcnc.getConfiguration()));
@@ -99,6 +100,19 @@ public final class OF10FeaturesRequestHandler {
         pb.setSupportedFeaturesV10(buildPortFeaturesV10(fcnc.getSupported()));
         pb.setPeerFeaturesV10(buildPortFeaturesV10(fcnc.getPeerFeatures()));
         return pb.build();
+    }
+    
+    private static long getPortNumberFromCommonPort(PortNumber portNumber) {
+        if (portNumber.getUint32() != null) {
+            return portNumber.getUint32().longValue();
+        } else {
+            // Port LOCAL is only OF port used in OF feature replies.
+            if (portNumber.getString() != null && "LOCAL".equals(portNumber.getString())) {
+                return 0xfffffffel;
+            } else {
+                return 0;
+            }
+        }
     }
 
     private static PortFeaturesV10 buildPortFeaturesV10(final PortFeatures feature) {
