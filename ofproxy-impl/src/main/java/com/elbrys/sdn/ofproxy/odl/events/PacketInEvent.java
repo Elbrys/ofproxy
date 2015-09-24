@@ -8,6 +8,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
+/**
+ * ODL PacketIn event
+ * 
+ * @author igork
+ * 
+ */
 @lombok.AllArgsConstructor(staticName = "create")
 public class PacketInEvent implements ODLEvent {
     @Getter
@@ -24,7 +30,7 @@ public class PacketInEvent implements ODLEvent {
         // Get the instanceID for the Node in the tree above us
         return ncri.<Node> firstIdentifierOf(Node.class);
     }
-    
+
     @Override
     public boolean isCheckNode() {
         return true;

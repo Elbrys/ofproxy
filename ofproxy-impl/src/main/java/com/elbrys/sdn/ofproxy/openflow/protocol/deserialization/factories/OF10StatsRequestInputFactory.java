@@ -58,38 +58,45 @@ public final class OF10StatsRequestInputFactory implements OFDeserializer<Multip
         builder.setType(MultipartType.forValue(type));
         builder.setFlags(new MultipartRequestFlags((rawMessage.readUnsignedShort() & 0x01) != 0));
         switch (type) {
-        case 0:  builder.setMultipartRequestBody(setDesc(rawMessage));
+        case 0:
+            builder.setMultipartRequestBody(setDesc(rawMessage));
             break;
-        case 1:  builder.setMultipartRequestBody(setFlow(rawMessage));
+        case 1:
+            builder.setMultipartRequestBody(setFlow(rawMessage));
             break;
-        case 2:  builder.setMultipartRequestBody(setAggregate(rawMessage));
+        case 2:
+            builder.setMultipartRequestBody(setAggregate(rawMessage));
             break;
-        case 3:  builder.setMultipartRequestBody(setTable(rawMessage));
-            break;         
-        case 4:  builder.setMultipartRequestBody(setPortStats(rawMessage));
+        case 3:
+            builder.setMultipartRequestBody(setTable(rawMessage));
             break;
-        case 5:  builder.setMultipartRequestBody(setQueue(rawMessage));
-            break;         
-        case 0xFFFF: builder.setMultipartRequestBody(setExperimenter(rawMessage));
+        case 4:
+            builder.setMultipartRequestBody(setPortStats(rawMessage));
             break;
-        default: 
+        case 5:
+            builder.setMultipartRequestBody(setQueue(rawMessage));
+            break;
+        case 0xFFFF:
+            builder.setMultipartRequestBody(setExperimenter(rawMessage));
+            break;
+        default:
             break;
         }
         return builder.build();
     }
-    
+
     private static MultipartRequestDescCase setDesc(final ByteBuf input) {
         MultipartRequestDescCaseBuilder caseBuilder = new MultipartRequestDescCaseBuilder();
         MultipartRequestDescBuilder descBuilder = new MultipartRequestDescBuilder();
         caseBuilder.setMultipartRequestDesc(descBuilder.build());
         return caseBuilder.build();
     }
-    
+
     private MultipartRequestFlowCase setFlow(final ByteBuf input) {
         MultipartRequestFlowCaseBuilder caseBuilder = new MultipartRequestFlowCaseBuilder();
         MultipartRequestFlowBuilder flowBuilder = new MultipartRequestFlowBuilder();
-        OFDeserializer<MatchV10> matchDeserializer = registry.getDeserializer(
-                new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, EncodeConstants.EMPTY_VALUE, MatchV10.class));
+        OFDeserializer<MatchV10> matchDeserializer = registry.getDeserializer(new MessageCodeKey(
+                EncodeConstants.OF10_VERSION_ID, EncodeConstants.EMPTY_VALUE, MatchV10.class));
         flowBuilder.setMatchV10(matchDeserializer.deserialize(input));
         flowBuilder.setTableId(input.readUnsignedByte());
         input.skipBytes(PADDING_IN_FLOW_STATS_HEADER);
@@ -97,12 +104,12 @@ public final class OF10StatsRequestInputFactory implements OFDeserializer<Multip
         caseBuilder.setMultipartRequestFlow(flowBuilder.build());
         return caseBuilder.build();
     }
-    
+
     private MultipartRequestAggregateCase setAggregate(final ByteBuf input) {
         MultipartRequestAggregateCaseBuilder caseBuilder = new MultipartRequestAggregateCaseBuilder();
         MultipartRequestAggregateBuilder builder = new MultipartRequestAggregateBuilder();
-        OFDeserializer<MatchV10> matchDeserializer = registry.getDeserializer(
-                new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, EncodeConstants.EMPTY_VALUE, MatchV10.class));
+        OFDeserializer<MatchV10> matchDeserializer = registry.getDeserializer(new MessageCodeKey(
+                EncodeConstants.OF10_VERSION_ID, EncodeConstants.EMPTY_VALUE, MatchV10.class));
         builder.setMatchV10(matchDeserializer.deserialize(input));
         builder.setTableId(input.readUnsignedByte());
         input.skipBytes(PADDING_IN_FLOW_STATS_HEADER);
@@ -110,14 +117,14 @@ public final class OF10StatsRequestInputFactory implements OFDeserializer<Multip
         caseBuilder.setMultipartRequestAggregate(builder.build());
         return caseBuilder.build();
     }
-    
+
     private MultipartRequestTableCase setTable(final ByteBuf input) {
         MultipartRequestTableCaseBuilder caseBuilder = new MultipartRequestTableCaseBuilder();
         MultipartRequestTableBuilder builder = new MultipartRequestTableBuilder();
-       caseBuilder.setMultipartRequestTable(builder.build());
+        caseBuilder.setMultipartRequestTable(builder.build());
         return caseBuilder.build();
     }
-    
+
     private MultipartRequestPortStatsCase setPortStats(final ByteBuf input) {
         MultipartRequestPortStatsCaseBuilder caseBuilder = new MultipartRequestPortStatsCaseBuilder();
         MultipartRequestPortStatsBuilder builder = new MultipartRequestPortStatsBuilder();
@@ -126,7 +133,7 @@ public final class OF10StatsRequestInputFactory implements OFDeserializer<Multip
         caseBuilder.setMultipartRequestPortStats(builder.build());
         return caseBuilder.build();
     }
-    
+
     private MultipartRequestQueueCase setQueue(final ByteBuf input) {
         MultipartRequestQueueCaseBuilder caseBuilder = new MultipartRequestQueueCaseBuilder();
         MultipartRequestQueueBuilder builder = new MultipartRequestQueueBuilder();
@@ -136,13 +143,14 @@ public final class OF10StatsRequestInputFactory implements OFDeserializer<Multip
         caseBuilder.setMultipartRequestQueue(builder.build());
         return caseBuilder.build();
     }
-    
+
     private MultipartRequestExperimenterCase setExperimenter(final ByteBuf input) {
-        return registry.getDeserializer(createMultipartRequestMessageDeserializerKey(
-                EncodeConstants.OF10_VERSION_ID, input.readUnsignedInt()));
+        return registry.getDeserializer(createMultipartRequestMessageDeserializerKey(EncodeConstants.OF10_VERSION_ID,
+                input.readUnsignedInt()));
     }
 
-    private MessageCodeKey createMultipartRequestMessageDeserializerKey(final byte of10VersionId, final long experimenterId) {
+    private MessageCodeKey createMultipartRequestMessageDeserializerKey(final byte of10VersionId,
+            final long experimenterId) {
         return new ExperimenterIdDeserializerKey(of10VersionId, experimenterId, MultipartRequestExperimenterCase.class);
     }
 

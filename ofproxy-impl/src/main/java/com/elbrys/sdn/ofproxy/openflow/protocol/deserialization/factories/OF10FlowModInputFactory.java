@@ -37,8 +37,8 @@ public final class OF10FlowModInputFactory implements OFDeserializer<FlowModInpu
         FlowModInputBuilder builder = new FlowModInputBuilder();
         builder.setVersion((short) EncodeConstants.OF10_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
-        OFDeserializer<MatchV10> matchDeserializer = registry.getDeserializer(
-                new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, EncodeConstants.EMPTY_VALUE, MatchV10.class));
+        OFDeserializer<MatchV10> matchDeserializer = registry.getDeserializer(new MessageCodeKey(
+                EncodeConstants.OF10_VERSION_ID, EncodeConstants.EMPTY_VALUE, MatchV10.class));
         builder.setMatchV10(matchDeserializer.deserialize(rawMessage));
         builder.setCookie(BigInteger.valueOf(rawMessage.readLong()));
         builder.setCommand(FlowModCommand.forValue(rawMessage.readUnsignedShort()));
@@ -50,20 +50,20 @@ public final class OF10FlowModInputFactory implements OFDeserializer<FlowModInpu
         builder.setFlagsV10(createFlowModFlagsV10FromBitmap(rawMessage.readUnsignedShort()));
         int actionListSize = rawMessage.readShort();
         CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(EncodeConstants.OF10_VERSION_ID);
-        List<Action> actions = ListDeserializer.deserializeList(EncodeConstants.OF10_VERSION_ID,
-                actionListSize, rawMessage, keyMaker, registry);
+        List<Action> actions = ListDeserializer.deserializeList(EncodeConstants.OF10_VERSION_ID, actionListSize,
+                rawMessage, keyMaker, registry);
         builder.setAction(actions);
         return builder.build();
     }
-    
-    private static FlowModFlagsV10 createFlowModFlagsV10FromBitmap(final int input){
+
+    private static FlowModFlagsV10 createFlowModFlagsV10FromBitmap(final int input) {
         final Boolean sendFlowRem = (input & (1 << 0)) != 0;
         final Boolean checkOverlap = (input & (1 << 1)) != 0;
-        final Boolean emergency = (input & (1 << 2)) != 0; 
+        final Boolean emergency = (input & (1 << 2)) != 0;
         // ODL FlowModFlagsV10 constructor uses flag order different from OF.
         return new FlowModFlagsV10(checkOverlap, emergency, sendFlowRem);
     }
-    
+
     @Override
     public void injectDeserializerRegistry(final DeserializerRegistry deserializerRegistry) {
         registry = deserializerRegistry;

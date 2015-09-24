@@ -35,13 +35,13 @@ public final class InboundMsgQueue implements Runnable {
                 e.printStackTrace();
             }
             if (msg != null) {
-//                LOG.debug("-- Inbound msg {}", msg);
+                // LOG.debug("-- Inbound msg {}", msg);
                 parseOFMsg(msg);
             }
         }
     }
 
-   public void stop() {
+    public void stop() {
         running = false;
     }
 
@@ -50,7 +50,7 @@ public final class InboundMsgQueue implements Runnable {
             LOG.debug("Unable to add element {} to inbound queue. Queue size: {}", clientMsg, inboundMsgs.size());
             return false;
         }
-//        LOG.debug(" Msg {} added to inbound queue", clientMsg);
+        // LOG.debug(" Msg {} added to inbound queue", clientMsg);
         return true;
     }
 
@@ -58,13 +58,13 @@ public final class InboundMsgQueue implements Runnable {
         try {
             DataObject ofMsg = decoder.deserialize(msg.getMsg());
             if (ofMsg != null) {
-               msg.getClient().consume(ofMsg);
+                msg.getClient().consume(ofMsg);
             } else {
-//                LOG.warn("Unable to deserialize {}",ByteBufUtils.byteBufToHexString(msg.getMsg()));
+                // LOG.warn("Unable to deserialize {}",ByteBufUtils.byteBufToHexString(msg.getMsg()));
             }
         } catch (Exception e) {
             LOG.debug("Unable to parse OF message", e);
         }
     }
 
- }
+}

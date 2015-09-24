@@ -1,4 +1,5 @@
 package com.elbrys.sdn.ofproxy.openflow.protocol;
+
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,12 +13,13 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 
-
 /**
- * Class that builds {@link org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OF10FeaturesRequestMessage} instances.
- *
+ * Class that builds
+ * {@link org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OF10FeaturesRequestMessage}
+ * instances.
+ * 
  * @see org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OF10FeaturesRequestMessage
- *
+ * 
  */
 public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10FeaturesRequestMessage> {
 
@@ -30,13 +32,15 @@ public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10Feat
 
     public OF10FeaturesRequestMessageBuilder() {
     }
-    
-    public OF10FeaturesRequestMessageBuilder(final org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FeaturesRequest arg) {
+
+    public OF10FeaturesRequestMessageBuilder(
+            final org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FeaturesRequest arg) {
         this._version = arg.getVersion();
         this._xid = arg.getXid();
     }
-    
-    public OF10FeaturesRequestMessageBuilder(final org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader arg) {
+
+    public OF10FeaturesRequestMessageBuilder(
+            final org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader arg) {
         this._version = arg.getVersion();
         this._xid = arg.getXid();
     }
@@ -51,41 +55,47 @@ public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10Feat
     }
 
     /**
-     *Set fields from given grouping argument. Valid argument is instance of one of following types:
+     * Set fields from given grouping argument. Valid argument is instance of
+     * one of following types:
      * <ul>
-     * <li>org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.Hello</li>
-     * <li>org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader</li>
+     * <li>org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.
+     * rev130731.Hello</li>
+     * <li>org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.
+     * rev130731.OfHeader</li>
      * </ul>
-     *
-     * @param arg grouping object
-     * @throws IllegalArgumentException if given argument is none of valid types
-    */
+     * 
+     * @param arg
+     *            grouping object
+     * @throws IllegalArgumentException
+     *             if given argument is none of valid types
+     */
     public void fieldsFrom(DataObject arg) {
         boolean isValidArg = false;
         if (arg instanceof org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FeaturesRequest) {
             isValidArg = true;
         }
         if (arg instanceof org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader) {
-            this._version = ((org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader)arg).getVersion();
-            this._xid = ((org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader)arg).getXid();
+            this._version = ((org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader) arg)
+                    .getVersion();
+            this._xid = ((org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader) arg)
+                    .getXid();
             isValidArg = true;
         }
         if (!isValidArg) {
             throw new IllegalArgumentException(
-              "expected one of: [org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.Hello, org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader] \n" +
-              "but was: " + arg
-            );
+                    "expected one of: [org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.Hello, org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader] \n"
+                            + "but was: " + arg);
         }
     }
 
     public java.lang.Short getVersion() {
         return _version;
     }
-    
+
     public java.lang.Long getXid() {
         return _xid;
     }
-    
+
     @SuppressWarnings("unchecked")
     public <E extends Augmentation<OF10FeaturesRequestMessage>> E getAugmentation(java.lang.Class<E> augmentationType) {
         if (augmentationType == null) {
@@ -104,12 +114,14 @@ public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10Feat
                 }
             }
             if (!isValidRange) {
-                throw new IllegalArgumentException(String.format("Invalid range: %s, expected: %s.", value, _version_range));
+                throw new IllegalArgumentException(String.format("Invalid range: %s, expected: %s.", value,
+                        _version_range));
             }
         }
         this._version = value;
         return this;
     }
+
     public static List<Range<BigInteger>> _version_range() {
         if (_version_range == null) {
             synchronized (OF10FeaturesRequestMessageBuilder.class) {
@@ -122,7 +134,7 @@ public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10Feat
         }
         return _version_range;
     }
-    
+
     public OF10FeaturesRequestMessageBuilder setXid(java.lang.Long value) {
         if (value != null) {
             BigInteger _constraint = BigInteger.valueOf(value);
@@ -139,6 +151,7 @@ public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10Feat
         this._xid = value;
         return this;
     }
+
     public static List<Range<BigInteger>> _xid_range() {
         if (_xid_range == null) {
             synchronized (OF10FeaturesRequestMessageBuilder.class) {
@@ -151,16 +164,19 @@ public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10Feat
         }
         return _xid_range;
     }
-    
-    public OF10FeaturesRequestMessageBuilder addAugmentation(java.lang.Class<? extends Augmentation<OF10FeaturesRequestMessage>> augmentationType, Augmentation<OF10FeaturesRequestMessage> augmentation) {
+
+    public OF10FeaturesRequestMessageBuilder addAugmentation(
+            java.lang.Class<? extends Augmentation<OF10FeaturesRequestMessage>> augmentationType,
+            Augmentation<OF10FeaturesRequestMessage> augmentation) {
         if (augmentation == null) {
             return removeAugmentation(augmentationType);
         }
         this.augmentation.put(augmentationType, augmentation);
         return this;
     }
-    
-    public OF10FeaturesRequestMessageBuilder removeAugmentation(java.lang.Class<? extends Augmentation<OF10FeaturesRequestMessage>> augmentationType) {
+
+    public OF10FeaturesRequestMessageBuilder removeAugmentation(
+            java.lang.Class<? extends Augmentation<OF10FeaturesRequestMessage>> augmentationType) {
         this.augmentation.remove(augmentationType);
         return this;
     }
@@ -187,11 +203,14 @@ public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10Feat
             case 0:
                 this.augmentation = Collections.emptyMap();
                 break;
-                case 1:
-                    final Map.Entry<java.lang.Class<? extends Augmentation<OF10FeaturesRequestMessage>>, Augmentation<OF10FeaturesRequestMessage>> e = base.augmentation.entrySet().iterator().next();
-                    this.augmentation = Collections.<java.lang.Class<? extends Augmentation<OF10FeaturesRequestMessage>>, Augmentation<OF10FeaturesRequestMessage>>singletonMap(e.getKey(), e.getValue());
+            case 1:
+                final Map.Entry<java.lang.Class<? extends Augmentation<OF10FeaturesRequestMessage>>, Augmentation<OF10FeaturesRequestMessage>> e = base.augmentation
+                        .entrySet().iterator().next();
+                this.augmentation = Collections
+                        .<java.lang.Class<? extends Augmentation<OF10FeaturesRequestMessage>>, Augmentation<OF10FeaturesRequestMessage>> singletonMap(
+                                e.getKey(), e.getValue());
                 break;
-            default :
+            default:
                 this.augmentation = new HashMap<>(base.augmentation);
             }
         }
@@ -200,15 +219,16 @@ public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10Feat
         public java.lang.Short getVersion() {
             return _version;
         }
-        
+
         @Override
         public java.lang.Long getXid() {
             return _xid;
         }
-        
+
         @SuppressWarnings("unchecked")
         @Override
-        public <E extends Augmentation<OF10FeaturesRequestMessage>> E getAugmentation(java.lang.Class<E> augmentationType) {
+        public <E extends Augmentation<OF10FeaturesRequestMessage>> E getAugmentation(
+                java.lang.Class<E> augmentationType) {
             if (augmentationType == null) {
                 throw new IllegalArgumentException("Augmentation Type reference cannot be NULL!");
             }
@@ -233,22 +253,22 @@ public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10Feat
             if (!(obj instanceof DataObject)) {
                 return false;
             }
-            if (!OF10FeaturesRequestMessage.class.equals(((DataObject)obj).getImplementedInterface())) {
+            if (!OF10FeaturesRequestMessage.class.equals(((DataObject) obj).getImplementedInterface())) {
                 return false;
             }
-            OF10FeaturesRequestMessage other = (OF10FeaturesRequestMessage)obj;
+            OF10FeaturesRequestMessage other = (OF10FeaturesRequestMessage) obj;
             if (_version == null) {
                 if (other.getVersion() != null) {
                     return false;
                 }
-            } else if(!_version.equals(other.getVersion())) {
+            } else if (!_version.equals(other.getVersion())) {
                 return false;
             }
             if (_xid == null) {
                 if (other.getXid() != null) {
                     return false;
                 }
-            } else if(!_xid.equals(other.getXid())) {
+            } else if (!_xid.equals(other.getXid())) {
                 return false;
             }
             if (getClass() == obj.getClass()) {
@@ -258,12 +278,13 @@ public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10Feat
                     if (otherImpl.augmentation != null) {
                         return false;
                     }
-                } else if(!augmentation.equals(otherImpl.augmentation)) {
+                } else if (!augmentation.equals(otherImpl.augmentation)) {
                     return false;
                 }
             } else {
                 // Hard case: compare our augments with presence there...
-                for (Map.Entry<java.lang.Class<? extends Augmentation<OF10FeaturesRequestMessage>>, Augmentation<OF10FeaturesRequestMessage>> e : augmentation.entrySet()) {
+                for (Map.Entry<java.lang.Class<? extends Augmentation<OF10FeaturesRequestMessage>>, Augmentation<OF10FeaturesRequestMessage>> e : augmentation
+                        .entrySet()) {
                     if (!e.getValue().equals(other.getAugmentation(e.getKey()))) {
                         return false;
                     }
@@ -278,9 +299,9 @@ public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10Feat
 
         @Override
         public java.lang.String toString() {
-            java.lang.StringBuilder builder = new java.lang.StringBuilder ("FeaturesRequestMessage [");
+            java.lang.StringBuilder builder = new java.lang.StringBuilder("FeaturesRequestMessage [");
             boolean first = true;
-        
+
             if (_version != null) {
                 if (first) {
                     first = false;
@@ -289,7 +310,7 @@ public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10Feat
                 }
                 builder.append("_version=");
                 builder.append(_version);
-             }
+            }
             if (_xid != null) {
                 if (first) {
                     first = false;
@@ -298,7 +319,7 @@ public final class OF10FeaturesRequestMessageBuilder implements Builder<OF10Feat
                 }
                 builder.append("_xid=");
                 builder.append(_xid);
-             }
+            }
             if (first) {
                 first = false;
             } else {

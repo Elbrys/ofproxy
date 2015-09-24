@@ -92,7 +92,7 @@ import com.elbrys.sdn.ofproxy.openflow.ClientNode;
 public final class OF10StatsRequestHandler {
     private final Logger LOG = LoggerFactory.getLogger(OF10StatsRequestHandler.class);
     private final long OFPP_NONE = 0xffffl;
-    
+
     private OpendaylightFlowStatisticsService flowService;
     private OpendaylightFlowTableStatisticsService tableService;
     private OpendaylightPortStatisticsService portService;
@@ -105,7 +105,6 @@ public final class OF10StatsRequestHandler {
         queueService = sess.getRpcService(OpendaylightQueueStatisticsService.class);
     }
 
-   
     public void consume(final OFClientMsg msg) {
         if (!(msg.getMsg() instanceof MultipartRequestInput)) {
             LOG.warn("Invalid messare received. {}", msg.getMsg());
@@ -132,14 +131,15 @@ public final class OF10StatsRequestHandler {
 
         if (reply == null) {
             // TODO fix an issues in stats Reply
-//            LOG.warn("Unable to reply on {}", message.getMultipartRequestBody());
+            // LOG.warn("Unable to reply on {}",
+            // message.getMultipartRequestBody());
             return;
         }
-//        LOG.warn("Received  {} {}", message.getType(), message);
+        // LOG.warn("Received  {} {}", message.getType(), message);
 
         MultipartReplyMessage mrm = buildMultipartReplyMessage(message.getType(), client.getXid(), message.getFlags(),
                 reply);
-//        LOG.warn("Send {}", mrm);
+        // LOG.warn("Send {}", mrm);
 
         client.send(mrm);
 
@@ -151,7 +151,7 @@ public final class OF10StatsRequestHandler {
         builder.setVersion((short) EncodeConstants.OF10_VERSION_ID);
         builder.setXid(xid);
         builder.setType(multipartType);
-//        LOG.warn("Build msg tyope  {}", multipartType);
+        // LOG.warn("Build msg tyope  {}", multipartType);
         builder.setFlags(flags);
         builder.setMultipartReplyBody(body);
         return builder.build();
@@ -176,41 +176,42 @@ public final class OF10StatsRequestHandler {
     private MultipartReplyBody onFlowRequest(final Client client, final MultipartRequestInput message) {
         MultipartRequestFlowCase mrfc = (MultipartRequestFlowCase) message.getMultipartRequestBody();
         MultipartRequestFlow mrf = mrfc.getMultipartRequestFlow();
-        
+
         GetAllFlowsStatisticsFromAllFlowTablesInputBuilder fsInput = new GetAllFlowsStatisticsFromAllFlowTablesInputBuilder();
         fsInput.setNode(new NodeRef(client.getNodePath()));
-        Future<RpcResult<GetAllFlowsStatisticsFromAllFlowTablesOutput>> future = flowService.getAllFlowsStatisticsFromAllFlowTables(fsInput.build());
+        Future<RpcResult<GetAllFlowsStatisticsFromAllFlowTablesOutput>> future = flowService
+                .getAllFlowsStatisticsFromAllFlowTables(fsInput.build());
         RpcResult<GetAllFlowsStatisticsFromAllFlowTablesOutput> res = null;
         try {
             res = future.get(1000, TimeUnit.SECONDS);
-            if (! res.isSuccessful()) {
+            if (!res.isSuccessful()) {
                 return null;
             }
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             return null;
         }
-        
+
         GetAllFlowsStatisticsFromAllFlowTablesOutput fss = res.getResult();
         if (fss == null || fss.getFlowAndStatisticsMapList() == null) {
             return null;
         }
-        
+
         List<FlowStats> retVal = new ArrayList<FlowStats>();
-        for (FlowAndStatisticsMapList fs: fss.getFlowAndStatisticsMapList()) {
+        for (FlowAndStatisticsMapList fs : fss.getFlowAndStatisticsMapList()) {
             if (mrf.getTableId() != 0xff && mrf.getTableId() != fs.getTableId()) {
                 // skip record. table is not requested.
                 continue;
             }
             if (mrf.getOutPort() != 0xffff && mrf.getOutPort() != fs.getOutPort().longValue()) {
-                // skip record. invalid outPort
+                // skip record. outPort is out of range
                 continue;
             }
-            //fs.getMatch();
-            //mrf.getMatchV10();
+            // fs.getMatch();
+            // mrf.getMatchV10();
             // TODO COmpare Match vs Match V10 and skip record if necessary
             retVal.add(convertToFlowStats(client, fs));
         }
-        
+
         MultipartReplyFlowCaseBuilder caseBuilder = new MultipartReplyFlowCaseBuilder();
         MultipartReplyFlowBuilder flowBuilder = new MultipartReplyFlowBuilder();
         flowBuilder.setFlowStats(retVal);
@@ -234,49 +235,44 @@ public final class OF10StatsRequestHandler {
         return fsb.build();
     }
 
-
     private List<Action> convertToAction(final Instructions instructions) {
         List<Action> retVal = new ArrayList<Action>();
         // TODO Convert ODL Instructions to OF10 Action list
+        // Standard ODL converter is not found
         return retVal;
     }
 
-
     private MatchV10 convertToMatchV10(final Client client, final Match match) {
         MatchV10Builder mb = new MatchV10Builder();
-        LOG.debug(">>>>>>>>>>>>>>>MMMMMMMMMMMMMMatach {}", match);
-        MatchReactor.getInstance().convert(match, EncodeConstants.OF10_VERSION_ID, mb,
-                client.getDatapathId());
-        LOG.debug("<<<<<<<<<<<<<<<<MMMMMMMMMMMMMMatach {}", mb.build());
+        MatchReactor.getInstance().convert(match, EncodeConstants.OF10_VERSION_ID, mb, client.getDatapathId());
         return mb.build();
     }
-
 
     private MultipartReplyBody onAggregateRequest(final Client client, final MultipartRequestInput message) {
         MultipartRequestAggregateCase mrac = (MultipartRequestAggregateCase) message.getMultipartRequestBody();
         MultipartRequestAggregate mra = mrac.getMultipartRequestAggregate();
 
-        // TODO create correct implementation of aggregate statistics
         GetAggregateFlowStatisticsFromFlowTableForAllFlowsInputBuilder gsb = new GetAggregateFlowStatisticsFromFlowTableForAllFlowsInputBuilder();
         gsb.setNode(new NodeRef(client.getNodePath()));
         gsb.setTableId(new TableId(mra.getTableId()));
-        
-        Future<RpcResult<GetAggregateFlowStatisticsFromFlowTableForAllFlowsOutput>> future = flowService.getAggregateFlowStatisticsFromFlowTableForAllFlows(gsb.build());
+
+        Future<RpcResult<GetAggregateFlowStatisticsFromFlowTableForAllFlowsOutput>> future = flowService
+                .getAggregateFlowStatisticsFromFlowTableForAllFlows(gsb.build());
         RpcResult<GetAggregateFlowStatisticsFromFlowTableForAllFlowsOutput> res;
         try {
             res = future.get(1000, TimeUnit.SECONDS);
-            if (! res.isSuccessful()) {
+            if (!res.isSuccessful()) {
                 return null;
             }
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             return null;
         }
-        
+
         GetAggregateFlowStatisticsFromFlowTableForAllFlowsOutput fss = res.getResult();
         if (fss == null) {
             return null;
         }
-        
+
         MultipartReplyAggregateCaseBuilder caseBuilder = new MultipartReplyAggregateCaseBuilder();
         MultipartReplyAggregateBuilder aggrBuilder = new MultipartReplyAggregateBuilder();
         if (fss.getByteCount() != null) {
@@ -316,10 +312,9 @@ public final class OF10StatsRequestHandler {
                         TableStatsBuilder tsb = new TableStatsBuilder();
                         tsb.setTableId(ftsm.getTableId().getValue());
                         tsb.setName(ftsm.getTableId().toString());
-                        // TODO get the following information later
+                        // TODO get the following information from ODLr
                         // tsb.setMaxEntries();
                         tsb.setMaxEntries((long) 256);
-                        // TODO get the following information later
                         // tsb.setWildcards();
                         FlowWildcardsV10 fw = new FlowWildcardsV10(true, true, true, true, true, true, true, true,
                                 true, true);
@@ -345,11 +340,12 @@ public final class OF10StatsRequestHandler {
     private MultipartReplyBody onPortRequest(final Client client, final MultipartRequestInput message) {
         MultipartRequestPortStatsCase mrpc = (MultipartRequestPortStatsCase) message.getMultipartRequestBody();
         MultipartRequestPortStats mrp = mrpc.getMultipartRequestPortStats();
-        
+
         GetAllNodeConnectorsStatisticsInputBuilder ncsib = new GetAllNodeConnectorsStatisticsInputBuilder();
         ncsib.setNode(new NodeRef(client.getNodePath()));
-        Future<RpcResult<GetAllNodeConnectorsStatisticsOutput>> future = portService.getAllNodeConnectorsStatistics(ncsib.build());
-        
+        Future<RpcResult<GetAllNodeConnectorsStatisticsOutput>> future = portService
+                .getAllNodeConnectorsStatistics(ncsib.build());
+
         RpcResult<GetAllNodeConnectorsStatisticsOutput> res;
         try {
             res = future.get(1000, TimeUnit.SECONDS);
@@ -390,11 +386,11 @@ public final class OF10StatsRequestHandler {
         }
         return null;
     }
-    
+
     private FlowCapableNodeConnector getNodeConnectorByNodeId(final Client client, final NodeConnectorId nodeConnectorId) {
         NodeConnectorKey nConKey = new NodeConnectorKey(nodeConnectorId);
-        InstanceIdentifier<NodeConnector> path = client.getNodePath().child(NodeConnector.class,
-                        nConKey).builder().toInstance();
+        InstanceIdentifier<NodeConnector> path = client.getNodePath().child(NodeConnector.class, nConKey).builder()
+                .toInstance();
         NodeConnector nc = Activator.getConfigObject(path);
         FlowCapableNodeConnector fcnc = nc.getAugmentation(FlowCapableNodeConnector.class);
         return fcnc;
@@ -403,7 +399,7 @@ public final class OF10StatsRequestHandler {
     private MultipartReplyBody onQueueRequest(final Client client, final MultipartRequestInput message) {
         MultipartRequestQueueCase mrqc = (MultipartRequestQueueCase) message.getMultipartRequestBody();
         MultipartRequestQueue mrq = mrqc.getMultipartRequestQueue();
-        
+
         GetQueueStatisticsFromGivenPortInputBuilder qsInput = new GetQueueStatisticsFromGivenPortInputBuilder();
         qsInput.setNode(new NodeRef(client.getNodePath()));
         NodeConnectorId ncId = client.getNodeConnectorIdByPortNumber(mrq.getPortNo());
@@ -412,24 +408,25 @@ public final class OF10StatsRequestHandler {
         }
         qsInput.setNodeConnectorId(ncId);
         qsInput.setQueueId(new QueueId(mrq.getQueueId()));
-        Future<RpcResult<GetQueueStatisticsFromGivenPortOutput>> future = queueService.getQueueStatisticsFromGivenPort(qsInput.build());
+        Future<RpcResult<GetQueueStatisticsFromGivenPortOutput>> future = queueService
+                .getQueueStatisticsFromGivenPort(qsInput.build());
         RpcResult<GetQueueStatisticsFromGivenPortOutput> res = null;
         try {
             res = future.get(1000, TimeUnit.SECONDS);
-            if (! res.isSuccessful()) {
+            if (!res.isSuccessful()) {
                 return null;
             }
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             return null;
         }
-        
+
         GetQueueStatisticsFromGivenPortOutput fss = res.getResult();
         if (fss == null || fss.getQueueIdAndStatisticsMap() == null) {
             return null;
         }
-        
+
         List<QueueStats> retVal = new ArrayList<QueueStats>();
-        for (QueueIdAndStatisticsMap qs: fss.getQueueIdAndStatisticsMap()) {
+        for (QueueIdAndStatisticsMap qs : fss.getQueueIdAndStatisticsMap()) {
             QueueStatsBuilder qsb = new QueueStatsBuilder();
             qsb.setDurationSec(qs.getDuration().getSecond().getValue());
             qsb.setDurationNsec(qs.getDuration().getNanosecond().getValue());

@@ -11,6 +11,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
 import com.elbrys.sdn.ofproxy.impl.OpendaylightMgr;
 import com.elbrys.sdn.ofproxy.odl.events.PacketInEvent;
 
+/**
+ * ODL PacketIn listener
+ * 
+ * @author igork
+ * 
+ */
 public final class PacketInListener implements PacketProcessingListener {
 
     private final OpendaylightMgr odlMgr;

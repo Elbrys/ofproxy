@@ -35,7 +35,7 @@ public final class OutboundMsgQueue implements Runnable {
             }
             if (msg != null) {
                 msg.getClient().send(msg.getMsg());
-//                LOG.debug("OF message sent. {}", msg);
+                // LOG.debug("OF message sent. {}", msg);
             }
         }
     }
@@ -49,7 +49,7 @@ public final class OutboundMsgQueue implements Runnable {
             LOG.debug("Unable to add element {} to outound queue. Queue size: {}", clientMsg, outboundMsgs.size());
             return false;
         }
-//        LOG.debug(" Msg {} added to outound queue", clientMsg);
+        // LOG.debug(" Msg {} added to outound queue", clientMsg);
         return true;
     }
 

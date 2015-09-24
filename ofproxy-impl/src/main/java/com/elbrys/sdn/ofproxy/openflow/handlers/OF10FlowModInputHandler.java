@@ -40,67 +40,55 @@ public final class OF10FlowModInputHandler {
     }
 
     public void consume(final OFClientMsg msg) {
-        // TODO replace necessary fields (xid, etc.)
         // TODO Check if client is allowed to set such flows
-//        LOG.trace("Convert FlowMod {}", msg.getMsg());
         sendFlowMod(msg.getClient(), (FlowModInput) msg.getMsg());
         LOG.trace("FlowMiod message is forwarded to the switch.");
     }
 
     private void sendFlowMod(final Client client, final FlowModInput msg) {
-       FlowId flowId = new FlowId(String.valueOf(flowIdN.incrementAndGet()));
-       FlowKey flowKey = new FlowKey(flowId);
-       short tableId = 0;
-       if (msg.getTableId()!= null && msg.getTableId().getValue() != null) {
-           tableId = msg.getTableId().getValue().shortValue();
-       }
-       FlowBuilder daylightFlow = createODLFlow(client, msg, flowKey, flowId, tableId);
+        FlowId flowId = new FlowId(String.valueOf(flowIdN.incrementAndGet()));
+        FlowKey flowKey = new FlowKey(flowId);
+        short tableId = 0;
+        if (msg.getTableId() != null && msg.getTableId().getValue() != null) {
+            tableId = msg.getTableId().getValue().shortValue();
+        }
+        FlowBuilder daylightFlow = createODLFlow(client, msg, flowKey, flowId, tableId);
 
-       final InstanceIdentifier<Flow> flowPath = InstanceIdentifier
-               .builder(Nodes.class)
-               .child(Node.class, new NodeKey(client.getNode().getId()))
-               .augmentation(FlowCapableNode.class)
-               .child(Table.class, new TableKey(tableId))
-               .child(Flow.class, flowKey).build();
-       final InstanceIdentifier<Table> tableInstanceId = flowPath
-               .<Table> firstIdentifierOf(Table.class);
-       final InstanceIdentifier<Node> nodeInstanceId = flowPath
-               .<Node> firstIdentifierOf(Node.class);
+        final InstanceIdentifier<Flow> flowPath = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, new NodeKey(client.getNode().getId())).augmentation(FlowCapableNode.class)
+                .child(Table.class, new TableKey(tableId)).child(Flow.class, flowKey).build();
+        final InstanceIdentifier<Table> tableInstanceId = flowPath.<Table> firstIdentifierOf(Table.class);
+        final InstanceIdentifier<Node> nodeInstanceId = flowPath.<Node> firstIdentifierOf(Node.class);
 
-       final Flow odlFlow = daylightFlow.build();
-       final AddFlowInputBuilder builder = new AddFlowInputBuilder(odlFlow);
-       builder.setNode(new NodeRef(nodeInstanceId));
-       builder.setFlowRef(new FlowRef(flowPath));
-       builder.setFlowTable(new FlowTableRef(tableInstanceId));
+        final Flow odlFlow = daylightFlow.build();
+        final AddFlowInputBuilder builder = new AddFlowInputBuilder(odlFlow);
+        builder.setNode(new NodeRef(nodeInstanceId));
+        builder.setFlowRef(new FlowRef(flowPath));
+        builder.setFlowTable(new FlowTableRef(tableInstanceId));
 
-       client.addFlow((AddFlowInput) builder.build());
-        
+        client.addFlow((AddFlowInput) builder.build());
+
     }
 
-    private FlowBuilder createODLFlow(final Client client, final FlowModInput msg, final FlowKey flowKey, final FlowId flowId, final short tableId) {
-        FlowBuilder allToCtrlFlow = new FlowBuilder().setTableId(tableId)
-                .setFlowName("OFProxy flow").setId(flowId)
+    private FlowBuilder createODLFlow(final Client client, final FlowModInput msg, final FlowKey flowKey,
+            final FlowId flowId, final short tableId) {
+        FlowBuilder allToCtrlFlow = new FlowBuilder().setTableId(tableId).setFlowName("OFProxy flow").setId(flowId)
                 .setKey(flowKey);
 
-        Match match = MatchConvertorImpl.fromOFMatchV10ToSALMatch(msg.getMatchV10(),client.getDatapathId(), OpenflowVersion.OF10);
-        Instructions instructions = OFToMDSalFlowConvertor.wrapOF10ActionsToInstruction(msg.getAction(), OpenflowVersion.OF10);
+        Match match = MatchConvertorImpl.fromOFMatchV10ToSALMatch(msg.getMatchV10(), client.getDatapathId(),
+                OpenflowVersion.OF10);
+        Instructions instructions = OFToMDSalFlowConvertor.wrapOF10ActionsToInstruction(msg.getAction(),
+                OpenflowVersion.OF10);
 
-        allToCtrlFlow
-                .setCookie(new FlowCookie(msg.getCookie()))
-                .setMatch(match)
-                .setInstructions(instructions)
-                .setPriority(msg.getPriority())
-                .setBufferId(msg.getBufferId())
-                .setHardTimeout(msg.getHardTimeout())
+        allToCtrlFlow.setCookie(new FlowCookie(msg.getCookie())).setMatch(match).setInstructions(instructions)
+                .setPriority(msg.getPriority()).setBufferId(msg.getBufferId()).setHardTimeout(msg.getHardTimeout())
                 .setIdleTimeout(msg.getIdleTimeout())
-                .setFlags(
-                        new FlowModFlags(msg.getFlagsV10().isOFPFFCHECKOVERLAP(),
-                                false, //!msg.getFlowFlags().isByteCounts(),
-                                false, //!msg.getFlowFlags().isPktCounts(),
-                                false, //msg.getFlowFlags().isResetCounts(),
-                                msg.getFlagsV10().isOFPFFSENDFLOWREM()));
+                .setFlags(new FlowModFlags(msg.getFlagsV10().isOFPFFCHECKOVERLAP(), false, // !msg.getFlowFlags().isByteCounts(),
+                        false, // !msg.getFlowFlags().isPktCounts(),
+                        false, // msg.getFlowFlags().isResetCounts(),
+                        msg.getFlagsV10().isOFPFFSENDFLOWREM()));
 
         return allToCtrlFlow;
     }
-    
+
 }

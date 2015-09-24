@@ -3,7 +3,6 @@ package com.elbrys.sdn.ofproxy.openflow.handlers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public final class SetConfigInputHandler {
     private static final Logger LOG = LoggerFactory.getLogger(SetConfigInputHandler.class);
 

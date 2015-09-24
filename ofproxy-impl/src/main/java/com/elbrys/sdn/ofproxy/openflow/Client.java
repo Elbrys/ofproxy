@@ -27,24 +27,36 @@ import com.elbrys.sdn.ofproxy.openflow.connection.ClientInitializer;
 import com.elbrys.sdn.ofproxy.openflow.queues.InboundMsgQueue;
 import com.google.common.util.concurrent.SettableFuture;
 
-public final class Client extends ClientNode implements Runnable{
+/**
+ * Class responsible for managinf connection to third party controller
+ * 
+ * @author igork
+ * 
+ */
+public final class Client extends ClientNode implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(Client.class);
-    
+
     private ClientConfig cfg;
     private EventLoopGroup group;
     private ClientInitializer clientInitializer;
     private Channel channel;
     private OpenflowMgr ofMgr;
     private int xid;
-    
-	public Client(final InstanceIdentifier<Node> nodePath, final ClientConfig config, final InboundMsgQueue inboundQueue, OpenflowMgr openflowMgr) {
+
+    public Client(final InstanceIdentifier<Node> nodePath, final ClientConfig config,
+            final InboundMsgQueue inboundQueue, OpenflowMgr openflowMgr) {
         super(nodePath);
-	    this.cfg = config;
+        this.cfg = config;
         clientInitializer = new ClientInitializer(this, inboundQueue);
         ofMgr = openflowMgr;
         xid = 1;
-	}
+    }
 
+    /**
+     * Return next XId to be used in OF messages
+     * 
+     * @return Xid
+     */
     public long getXid() {
         return xid++;
     }
@@ -54,9 +66,7 @@ public final class Client extends ClientNode implements Runnable{
         group = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap();
-            b.group(group)
-                .channel(NioSocketChannel.class)
-                .handler(clientInitializer);
+            b.group(group).channel(NioSocketChannel.class).handler(clientInitializer);
 
             ChannelFuture cf = b.connect(cfg.getHost(), cfg.getPort()).sync();
 
@@ -85,8 +95,8 @@ public final class Client extends ClientNode implements Runnable{
                 LOG.warn("Failed to connect to [{}:{}]", cfg.getHost(), cfg.getPort());
                 LOG.warn("  * reason: {}", cf.cause());
                 throw new RuntimeException("Could not connect to " + cfg.getHost() + ":" + cfg.getPort(), cf.cause());
-            }     
-            
+            }
+
             channel = cf.channel();
             // Wait until the connection is closed.
             channel.closeFuture().sync();
@@ -97,7 +107,10 @@ public final class Client extends ClientNode implements Runnable{
             close();
         }
     }
-    
+
+    /**
+     * Closes connection to controller
+     */
     public void close() {
         try {
             channel.close().awaitUninterruptibly();
@@ -107,42 +120,92 @@ public final class Client extends ClientNode implements Runnable{
             LOG.error(e.getMessage(), e);
         }
     }
-    
+
+    /**
+     * Return connection configuration
+     * 
+     * @return connection configuration
+     */
     public ClientConfig getConfig() {
         return cfg;
     }
 
+    /**
+     * Sends raw message to connected OF controller
+     * 
+     * @param out
+     *            Raw message
+     */
     public void send(final ByteBuf out) {
         ChannelHandlerContext ctx = clientInitializer.getChannelCtx();
         if (ctx != null) {
-           ctx.writeAndFlush(out);
+            ctx.writeAndFlush(out);
         }
     }
 
+    /**
+     * Return true if connection to OF controller is established.
+     * 
+     * @return
+     */
     public SettableFuture<Boolean> getIsOnlineFuture() {
         return clientInitializer.getIsOnlineFuture();
     }
 
+    /**
+     * Returns connection context
+     * 
+     * @return Connection context
+     */
     public ChannelHandlerContext getCtxt() {
         return clientInitializer.getChannelCtx();
     }
 
-    public void addFlow(AddFlowInput flow) {
-        ofMgr.addFlow(flow);
-    }
-
+    /**
+     * Consumes OF message
+     * 
+     * @param ofMsg
+     *            OF message
+     */
     public void consume(DataObject ofMsg) {
         ofMgr.consume(this, ofMsg);
     }
 
+    /**
+     * Queue OF message to be send to OF controller
+     * 
+     * @param msg
+     *            OF message
+     */
     public void send(DataObject msg) {
         ofMgr.send(this, msg);
     }
 
+    /**
+     * Sends ODL PacketOut message
+     * 
+     * @param packet
+     *            ODL packetOut message
+     */
     public void transmitPacket(TransmitPacketInput packet) {
         ofMgr.transmitPacket(packet);
     }
 
+    /**
+     * Sends ODL FlowMNod message
+     * 
+     * @param flow
+     *            Flow to be set
+     */
+    public void addFlow(AddFlowInput flow) {
+        ofMgr.addFlow(flow);
+    }
+
+    /**
+     * Return third party controller connection key
+     * 
+     * @return connection key
+     */
     public String getKey() {
         return cfg.getKey();
     }

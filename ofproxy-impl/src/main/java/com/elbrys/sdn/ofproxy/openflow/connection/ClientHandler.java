@@ -6,7 +6,6 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-
 package com.elbrys.sdn.ofproxy.openflow.connection;
 
 import io.netty.buffer.ByteBuf;
@@ -19,6 +18,12 @@ import org.slf4j.LoggerFactory;
 import com.elbrys.sdn.ofproxy.openflow.ClientMsg;
 import com.elbrys.sdn.ofproxy.openflow.queues.InboundMsgQueue;
 
+/**
+ * OF packet handler
+ * 
+ * @author igork
+ * 
+ */
 public class ClientHandler extends ChannelInboundHandlerAdapter {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(ClientHandler.class);
@@ -27,10 +32,12 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     private ClientInitializer clientInitializer;
     private InboundMsgQueue msgQueue;
     private ClientHandshake clientHandshake;
+
     /**
-     * @param isOnlineFuture future notifier of connected channel
-     * @param clientInitializer 
-     * @param msgQueue2 
+     * @param isOnlineFuture
+     *            future notifier of connected channel
+     * @param clientInitializer
+     * @param msgQueue2
      */
     public ClientHandler(final ClientInitializer clientInitializer, final InboundMsgQueue inboundQueue) {
         this.clientInitializer = clientInitializer;
@@ -47,11 +54,10 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
         int length = bb.getUnsignedShort(bb.readerIndex() + LENGTH_INDEX_IN_HEADER);
         if (bb.readableBytes() < length) {
-            LOGGER.debug("skipping message - too few data for msg: " +
-                    bb.readableBytes() + " < " + length);
+            LOGGER.debug("skipping message - too few data for msg: " + bb.readableBytes() + " < " + length);
             return;
         }
-        
+
         if (!msgQueue.offer(ClientMsg.create(clientInitializer.getClient(), bb))) {
             LOGGER.warn("Unable to queue inbound message. Client {}. Msg {}.", clientInitializer.getClient(), msg);
         }
@@ -66,6 +72,6 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         clientInitializer.setCtx(ctx);
         // Start handshake
         clientHandshake = new ClientHandshake(clientInitializer.getClient());
-        clientHandshake.start();        
+        clientHandshake.start();
     }
 }

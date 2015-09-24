@@ -4,35 +4,57 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+/**
+ * List of trhid party controllers connected to ODL node
+ * 
+ * @author igork
+ * 
+ */
+public final class ClientList {
 
-public final class ClientList{
-    
     private final ConcurrentHashMap<String, Client> clients;
-    
-	public ClientList() {
-	    clients = new ConcurrentHashMap<String, Client>();
-	}
-	
-	public final Map<String, Client> getClients() {
-	    return Collections.unmodifiableMap(clients);
-	}
-	
+
+    /**
+     * ClientList constructor
+     */
+    public ClientList() {
+        clients = new ConcurrentHashMap<String, Client>();
+    }
+
+    /**
+     * Returns list of connections
+     * 
+     * @return list of connections
+     */
+    public final Map<String, Client> getClients() {
+        return Collections.unmodifiableMap(clients);
+    }
+
+    /**
+     * Adds connection to the list
+     * 
+     * @param client
+     *            Client connection
+     */
     public final void addConnection(Client client) {
         clients.putIfAbsent(client.getKey(), client);
     }
-    
+
+    /**
+     * Removes connection to third party controller
+     * 
+     * @param client
+     *            connection to be removed
+     */
     public final void removeConnection(Client client) {
         clients.remove(client.getConfig().getKey());
     }
-    
-    public final Client getClient(InstanceIdentifier<Node> nodePath) {
-        return clients.get(nodePath);
-    }
 
+    /**
+     * Closes all connections
+     */
     public void stop() {
-        for (Client client:clients.values()) {
+        for (Client client : clients.values()) {
             client.close();
         }
     }

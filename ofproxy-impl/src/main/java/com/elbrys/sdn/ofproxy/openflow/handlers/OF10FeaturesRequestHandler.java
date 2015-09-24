@@ -44,7 +44,7 @@ public final class OF10FeaturesRequestHandler {
 
     public static void consume(final OFClientMsg msg) {
         Client client = msg.getClient();
-        GetFeaturesOutput gfo = getFeaturesOutput(msg.getClient()); 
+        GetFeaturesOutput gfo = getFeaturesOutput(msg.getClient());
         if (gfo == null) {
             LOG.warn("Unable to create feature reply.");
             return;
@@ -57,7 +57,7 @@ public final class OF10FeaturesRequestHandler {
         if (node == null) {
             return null;
         }
-        
+
         FlowCapableNode fcn = client.getFlowCapableNode();
         if (fcn == null) {
             return null;
@@ -88,7 +88,7 @@ public final class OF10FeaturesRequestHandler {
     }
 
     private static PhyPort buildPortInfo(final FlowCapableNodeConnector fcnc) {
-        
+
         PhyPortBuilder pb = new PhyPortBuilder();
         pb.setPortNo(getPortNumberFromCommonPort(fcnc.getPortNumber()));
         pb.setHwAddr(fcnc.getHardwareAddress());
@@ -101,7 +101,7 @@ public final class OF10FeaturesRequestHandler {
         pb.setPeerFeaturesV10(buildPortFeaturesV10(fcnc.getPeerFeatures()));
         return pb.build();
     }
-    
+
     private static long getPortNumberFromCommonPort(PortNumber portNumber) {
         if (portNumber.getUint32() != null) {
             return portNumber.getUint32().longValue();
@@ -128,8 +128,8 @@ public final class OF10FeaturesRequestHandler {
         final Boolean _autoneg = feature.isAutoeng();
         final Boolean _pause = feature.isPause();
         final Boolean _pauseAsym = feature.isPauseAsym();
-        return new PortFeaturesV10(_100mbFd, _100mbHd, _10gbFd, _10mbFd, _10mbHd,
-                _1gbFd, _1gbHd, _autoneg, _copper, _fiber, _pause, _pauseAsym);
+        return new PortFeaturesV10(_100mbFd, _100mbHd, _10gbFd, _10mbFd, _10mbHd, _1gbFd, _1gbHd, _autoneg, _copper,
+                _fiber, _pause, _pauseAsym);
     }
 
     private static PortStateV10 buildPortStateV10(final State state) {
@@ -142,12 +142,12 @@ public final class OF10FeaturesRequestHandler {
         final Boolean _stpForward = false;
         final Boolean _stpBlock = false;
         final Boolean _stpMask = false;
-        return new PortStateV10(_blocked, _linkDown, _live, _stpBlock, _stpForward,
-                _stpLearn, _stpListen, _stpMask);
+        return new PortStateV10(_blocked, _linkDown, _live, _stpBlock, _stpForward, _stpLearn, _stpListen, _stpMask);
     }
 
     private static PortConfigV10 buildConfigV10(final PortConfig cfg) {
-        // ODL is not saving some port configuration parameters. Set them to false
+        // ODL is not saving some port configuration parameters. Set them to
+        // false
         final Boolean _portDown = cfg.isPORTDOWN();
         final Boolean _noStp = false;
         final Boolean _noRecv = cfg.isNORECV();
@@ -160,7 +160,7 @@ public final class OF10FeaturesRequestHandler {
     }
 
     private static ActionTypeV10 buildAllActionsV10() {
-        // Actions are not saved in ODL. Use actions reported by HP switches as 
+        // Actions are not saved in ODL. Use actions reported by HP switches as
         // default.
         int input = 0x000007ff;
         final Boolean OUTPUT = (input & (1 << 0)) != 0;
@@ -176,15 +176,12 @@ public final class OF10FeaturesRequestHandler {
         final Boolean SET_TP_DST = (input & (1 << 10)) != 0;
         final Boolean ENQUEUE = (input & (1 << 11)) != 0;
         final Boolean VENDOR = (input & (1 << 12)) != 0;
-        return new ActionTypeV10(ENQUEUE, OUTPUT, SET_DL_DST, SET_DL_SRC,
-                SET_NW_DST, SET_NW_SRC, SET_NW_TOS, SET_TP_DST, SET_TP_SRC,
-                SET_VLAN_PCP, SET_VLAN_VID, STRIP_VLAN, VENDOR);
+        return new ActionTypeV10(ENQUEUE, OUTPUT, SET_DL_DST, SET_DL_SRC, SET_NW_DST, SET_NW_SRC, SET_NW_TOS,
+                SET_TP_DST, SET_TP_SRC, SET_VLAN_PCP, SET_VLAN_VID, STRIP_VLAN, VENDOR);
     }
 
     private static CapabilitiesV10 buildCapabilitiesV10(final List<Class<? extends FeatureCapability>> capabilities) {
-        boolean isOFPCARPMATCHIP = false, isOFPCFLOWSTATS = false, isOFPCIPREASM = false,
-                isOFPCPORTSTATS = false, isOFPCQUEUESTATS = false, isOFPCRESERVED = false,
-                isOFPCSTP = false, isOFPCTABLESTATS = false;
+        boolean isOFPCARPMATCHIP = false, isOFPCFLOWSTATS = false, isOFPCIPREASM = false, isOFPCPORTSTATS = false, isOFPCQUEUESTATS = false, isOFPCRESERVED = false, isOFPCSTP = false, isOFPCTABLESTATS = false;
         for (Object capability : capabilities) {
             if (capability.equals(FlowFeatureCapabilityArpMatchIp.class)) {
                 isOFPCARPMATCHIP = true;
@@ -209,8 +206,7 @@ public final class OF10FeaturesRequestHandler {
     }
 
     public static String getDpId(final InstanceIdentifier<Node> instanceIdentifier) {
-        String daylightDpID = instanceIdentifier.firstKeyOf(Node.class, NodeKey.class)
-                .getId().getValue();
+        String daylightDpID = instanceIdentifier.firstKeyOf(Node.class, NodeKey.class).getId().getValue();
         String[] split = daylightDpID.split(":");
 
         // If the length is just one then this cannot be the new MD-SAL

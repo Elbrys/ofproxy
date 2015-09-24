@@ -15,14 +15,20 @@ import com.elbrys.sdn.ofproxy.odl.events.FlowRemovedEvent;
 import com.elbrys.sdn.ofproxy.openflow.Client;
 import com.elbrys.sdn.ofproxy.openflow.ClientList;
 
+/**
+ * ODL Flow removed event handler
+ * 
+ * @author igork
+ * 
+ */
 public final class FlowRemovedHandler {
     private static final Logger LOG = LoggerFactory.getLogger(FlowRemovedHandler.class);
 
     public static void consume(final FlowRemovedEvent event) {
-        
-        ClientList cl = OFProxy.getInstance().getClientList(event.getNodePath());
+
+        ClientList cl = OFProxy.getInstance().getConnections(event.getNodePath());
         if (cl != null) {
-            for (Client client:cl.getClients().values()) {
+            for (Client client : cl.getClients().values()) {
                 FlowRemovedMessage frm = createFlowRemoved(client, event.getFlow());
                 client.send(frm);
             }

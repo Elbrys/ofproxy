@@ -18,14 +18,19 @@ import org.slf4j.LoggerFactory;
 
 import com.elbrys.sdn.ofproxy.openflow.TypeToClassMapInit;
 
-
-public final class MsgDecoder{
+/**
+ * OF message decoder
+ * 
+ * @author igork
+ * 
+ */
+public final class MsgDecoder {
     private static final Logger LOG = LoggerFactory.getLogger(MsgDecoder.class);
-    
+
     private DeserializerRegistry registry;
     private DeserializationFactory factory;
     private Map<TypeToClassKey, Class<?>> messageClassMap;
-    
+
     public MsgDecoder() {
         registry = new OFDeserializerRegistryImpl();
         registry.init();
@@ -34,12 +39,12 @@ public final class MsgDecoder{
         messageClassMap = new HashMap<TypeToClassKey, Class<?>>();
         TypeToClassMapInit.initializeTypeToClassMap(messageClassMap);
     }
-    
+
     public DataObject deserialize(final ByteBuf rawMessage) {
-//        ByteBuf bb = (ByteBuf) rawMessage;
-//        if (LOG.isDebugEnabled()) {
-////            LOG.debug("<< " + ByteBufUtils.byteBufToHexString(bb));
-//        }
+        // ByteBuf bb = (ByteBuf) rawMessage;
+        // if (LOG.isDebugEnabled()) {
+        // // LOG.debug("<< " + ByteBufUtils.byteBufToHexString(bb));
+        // }
 
         DataObject dataObject = null;
         int type = -1;

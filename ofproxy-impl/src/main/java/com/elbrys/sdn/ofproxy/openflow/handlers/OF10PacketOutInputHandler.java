@@ -22,8 +22,7 @@ public final class OF10PacketOutInputHandler {
     private static final Logger LOG = LoggerFactory.getLogger(OF10PacketOutInputHandler.class);
 
     public static void consume(final OFClientMsg msg) {
-        // TODO replace necessary fields (xid, etc.) Check if packet should be
-        // forwarded to client
+        // TODO Check if packet should be forwarded to client
         LOG.trace("PacketOut message is forwarded to the switch.");
         sendPacketOut(msg.getClient(), (PacketOutInput) msg.getMsg());
     }
@@ -56,7 +55,8 @@ public final class OF10PacketOutInputHandler {
         tPackBuilder.setAction(odlActions);
 
         // ODL requires egress port to be set, find output action and convert it
-        // to port number. Use port number 0 if there is no OUTPUT action present 
+        // to port number. Use port number 0 if there is no OUTPUT action
+        // present
         // FIXME It is not clear what should be done if PACKET_OUT received with
         // action DROP (no actions present)
         List<Action> actionList = pkt.getAction();

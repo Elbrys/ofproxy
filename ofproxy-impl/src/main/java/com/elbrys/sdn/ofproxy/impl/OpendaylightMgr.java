@@ -22,11 +22,16 @@ import com.elbrys.sdn.ofproxy.odl.PacketInListener;
 import com.elbrys.sdn.ofproxy.odl.events.ODLEvent;
 import com.elbrys.sdn.ofproxy.odl.queue.ODLEventQueue;
 
+/**
+ * Class responsible for managing ODL events.
+ * 
+ * @author igork
+ * 
+ */
 public final class OpendaylightMgr {
     private static final Logger LOG = LoggerFactory.getLogger(OpendaylightMgr.class);
-
     private static final int MSG_QUEUE_SIZE = 1000;
-	
+
     private final ExecutorService executor;
     private final ODLEventQueue odlEvents;
     private final NodeListener nodeMgr;
@@ -36,28 +41,36 @@ public final class OpendaylightMgr {
     private final FlowListener flowMgr;
     private org.opendaylight.yangtools.concepts.Registration flowRegistration;
 
-	public OpendaylightMgr(final ConsumerContext sess, ExecutorService executor) {
+    /**
+     * OpendaylightMgr constructor
+     * 
+     * @param sess
+     *            ODL consumer context session
+     * @param executor
+     *            Executor service
+     */
+    public OpendaylightMgr(final ConsumerContext sess, ExecutorService executor) {
         LOG.debug("Opendaylight manager constructor started.");
-		this.executor = executor;
-		odlEvents = new ODLEventQueue(MSG_QUEUE_SIZE, sess);
+        this.executor = executor;
+        odlEvents = new ODLEventQueue(MSG_QUEUE_SIZE, sess);
         LOG.debug("Opendaylight manager constructor finished.");
         nodeMgr = new NodeListener(this);
         LOG.debug("Opendaylight manager constructor registering node listener.");
         nodeLsnrRegistration = sess.getSALService(DataBroker.class).registerDataChangeListener(
                 LogicalDatastoreType.OPERATIONAL,
-                InstanceIdentifier.builder(Nodes.class).child(Node.class)
-                        .augmentation(FlowCapableNode.class).toInstance(),
-                nodeMgr, DataBroker.DataChangeScope.SUBTREE);
+                InstanceIdentifier.builder(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class)
+                        .toInstance(), nodeMgr, DataBroker.DataChangeScope.SUBTREE);
         pktMgr = new PacketInListener(this);
-        packetInRegistration = sess.getSALService(NotificationService.class)
-                .registerNotificationListener(pktMgr);
+        packetInRegistration = sess.getSALService(NotificationService.class).registerNotificationListener(pktMgr);
         flowMgr = new FlowListener(this);
-        flowRegistration = sess.getSALService(NotificationService.class)
-                .registerNotificationListener(flowMgr);
-        
-	}
-    
-	public void stop() {
+        flowRegistration = sess.getSALService(NotificationService.class).registerNotificationListener(flowMgr);
+
+    }
+
+    /**
+     * Stops OpendaylightMgr
+     */
+    public void stop() {
         if (nodeLsnrRegistration != null) {
             nodeLsnrRegistration.close();
             LOG.debug("unregister nodeListenerRegistration");
@@ -78,24 +91,33 @@ public final class OpendaylightMgr {
             }
             LOG.debug("unregister flowRegistration");
         }
-	}
+    }
 
-	public void start() {
+    /**
+     * Starts OpendaylightMgr
+     */
+    public void start() {
         LOG.debug("Opendaylight manager starting odlEvents.");
-	    executor.execute(odlEvents);
+        executor.execute(odlEvents);
         LOG.debug("Opendaylight manager started.");
-		
-	}
+    }
 
+    /**
+     * Consumes ODL event
+     * 
+     * @param odlEvent
+     *            ODL event
+     */
     public void odlEvent(final ODLEvent odlEvent) {
 
-        if (odlEvent.isCheckNode() && null == OFProxy.getInstance().getClientList(odlEvent.getNodePath())) {
-            // Check node for qualified events. Skip event if node is not exists
+        if (odlEvent.isCheckNode() && null == OFProxy.getInstance().getConnections(odlEvent.getNodePath())) {
+            // Skip event if node does not have any thrid party controllers
+            // connected
+            return;
         }
 
         if (!odlEvents.offer(odlEvent)) {
             LOG.warn("Unable to queue ODL event. Event {}", odlEvent);
         }
     }
-
 }

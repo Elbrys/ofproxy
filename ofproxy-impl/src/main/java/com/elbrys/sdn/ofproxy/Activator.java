@@ -17,13 +17,12 @@ import com.google.common.base.Optional;
 
 /**
  * Main application activator class for registering the dependencies and
- * initializing the OFProxy app.
+ * initializing the OFProxy application.
  * 
  */
-public final class Activator extends AbstractBindingAwareConsumer implements
-        AutoCloseable {
+public final class Activator extends AbstractBindingAwareConsumer implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(Activator.class);
-    
+
     /** ConsumerContext session. */
     private static ConsumerContext session = null;
 
@@ -60,14 +59,13 @@ public final class Activator extends AbstractBindingAwareConsumer implements
     }
 
     /**
-     * Returns object from operational data store.
-     * @param objRef - object reference
+     * Returns object from ODL operational data store.
+     * 
+     * @param objRef Object reference
      * @return Requested object
      */
-    public static <K extends DataObject> K getConfigObject(
-            final InstanceIdentifier<K> objRef) {
-        ReadOnlyTransaction readTx = session.getSALService(DataBroker.class)
-                .newReadOnlyTransaction();
+    public static <K extends DataObject> K getConfigObject(final InstanceIdentifier<K> objRef) {
+        ReadOnlyTransaction readTx = session.getSALService(DataBroker.class).newReadOnlyTransaction();
         Optional<K> data;
         try {
             data = readTx.read(LogicalDatastoreType.OPERATIONAL, objRef).get();

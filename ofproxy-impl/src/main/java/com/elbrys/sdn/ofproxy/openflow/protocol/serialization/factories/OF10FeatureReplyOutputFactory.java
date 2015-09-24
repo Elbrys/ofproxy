@@ -21,7 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.features.reply.PhyPort;
 
-public final class OF10FeatureReplyOutputFactory implements OFSerializer<GetFeaturesOutput>{
+public final class OF10FeatureReplyOutputFactory implements OFSerializer<GetFeaturesOutput> {
     private static final byte MESSAGE_TYPE = 6;
     private static final byte PADDING_IN_FEATURES_REPLY_HEADER = 3;
 
@@ -29,14 +29,14 @@ public final class OF10FeatureReplyOutputFactory implements OFSerializer<GetFeat
     public void serialize(final GetFeaturesOutput message, final ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         // TODO REmove +1 in released version
-        //        outBuffer.writeLong(message.getDatapathId().longValue());
+        // outBuffer.writeLong(message.getDatapathId().longValue());
         outBuffer.writeLong(message.getDatapathId().longValue() + 1);
         outBuffer.writeInt(message.getBuffers().intValue());
         outBuffer.writeByte(message.getTables().byteValue());
         outBuffer.writeZero(PADDING_IN_FEATURES_REPLY_HEADER);
         outBuffer.writeInt(createCapabilitiesV10(message.getCapabilitiesV10()));
         outBuffer.writeInt(createActionsV10(message.getActionsV10()));
-        for (PhyPort port: message.getPhyPort()) {
+        for (PhyPort port : message.getPhyPort()) {
             serializePort(port, outBuffer);
         }
         ByteBufUtils.updateOFHeaderLength(outBuffer);
@@ -48,10 +48,10 @@ public final class OF10FeatureReplyOutputFactory implements OFSerializer<GetFeat
             portN = port.getPortNo().shortValue();
         }
         outBuffer.writeShort(portN);
-        
+
         String macAddress = port.getHwAddr().getValue();
         outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(macAddress));
-        
+
         // Name should be saved as 16 bit null terminated string
         String name = "";
         if (port.getName() != null) {
@@ -59,7 +59,7 @@ public final class OF10FeatureReplyOutputFactory implements OFSerializer<GetFeat
         }
         outBuffer.writeBytes(name.getBytes());
         outBuffer.writeZero(16 - name.getBytes().length);
-        
+
         outBuffer.writeInt(createConfigV10(port.getConfigV10()));
         outBuffer.writeInt(createStateV10(port.getStateV10()));
         outBuffer.writeInt(createPortFeaturesV10(port.getCurrentFeaturesV10()));
@@ -69,69 +69,35 @@ public final class OF10FeatureReplyOutputFactory implements OFSerializer<GetFeat
     }
 
     private static int createPortFeaturesV10(final PortFeaturesV10 input) {
-       return ByteBufUtils.fillBitMask(0,
-                input.is_10mbHd(),
-                input.is_10mbFd(),
-                input.is_100mbHd(),
-                input.is_100mbFd(),
-                input.is_1gbHd(),
-                input.is_1gbFd(),
-                input.is_10gbFd(),
-                input.isCopper(),
-                input.isFiber(),
-                input.isAutoneg(),
-                input.isPause(),
-                input.isPauseAsym());
+        return ByteBufUtils.fillBitMask(0, input.is_10mbHd(), input.is_10mbFd(), input.is_100mbHd(),
+                input.is_100mbFd(), input.is_1gbHd(), input.is_1gbFd(), input.is_10gbFd(), input.isCopper(),
+                input.isFiber(), input.isAutoneg(), input.isPause(), input.isPauseAsym());
     }
 
     private static int createStateV10(final PortStateV10 input) {
-        
-        return ByteBufUtils.fillBitMask(0,
-                input.isLinkDown(),
-                false,false,false,false,false,false,false,
-                input.isStpBlock() || input.isStpBlock(), //1<<8
-                input.isStpForward(), //2<<8
-                input.isStpBlock() || input.isStpMask() //3<<8
-                );
+
+        return ByteBufUtils.fillBitMask(0, input.isLinkDown(), false, false, false, false, false, false, false,
+                input.isStpBlock() || input.isStpBlock(), // 1<<8
+                input.isStpForward(), // 2<<8
+                input.isStpBlock() || input.isStpMask() // 3<<8
+        );
     }
 
     private static int createConfigV10(final PortConfigV10 input) {
-        return ByteBufUtils.fillBitMask(0,
-                input.isPortDown(),
-                input.isNoStp(), 
-                input.isNoRecv(), 
-                input.isNoRecvStp(), 
-                input.isNoFlood(), 
-                input.isNoFwd(),
-                input.isNoPacketIn());
+        return ByteBufUtils.fillBitMask(0, input.isPortDown(), input.isNoStp(), input.isNoRecv(), input.isNoRecvStp(),
+                input.isNoFlood(), input.isNoFwd(), input.isNoPacketIn());
     }
 
     private static int createCapabilitiesV10(final CapabilitiesV10 input) {
-        return ByteBufUtils.fillBitMask(0,
-                input.isOFPCFLOWSTATS(),
-                input.isOFPCTABLESTATS(),
-                input.isOFPCPORTSTATS(),
-                input.isOFPCSTP(),
-                input.isOFPCRESERVED(),
-                input.isOFPCIPREASM(),
-                input.isOFPCQUEUESTATS(),
+        return ByteBufUtils.fillBitMask(0, input.isOFPCFLOWSTATS(), input.isOFPCTABLESTATS(), input.isOFPCPORTSTATS(),
+                input.isOFPCSTP(), input.isOFPCRESERVED(), input.isOFPCIPREASM(), input.isOFPCQUEUESTATS(),
                 input.isOFPCARPMATCHIP());
     }
-    
+
     private static int createActionsV10(final ActionTypeV10 input) {
-        return ByteBufUtils.fillBitMask(0,
-                input.isOFPATOUTPUT(),
-                input.isOFPATSETVLANVID(),
-                input.isOFPATSETVLANPCP(),
-                input.isOFPATSTRIPVLAN(),
-                input.isOFPATSETDLSRC(),
-                input.isOFPATSETDLDST(),
-                input.isOFPATSETNWSRC(),
-                input.isOFPATSETNWDST(),
-                input.isOFPATSETNWTOS(),
-                input.isOFPATSETTPSRC(),
-                input.isOFPATSETTPDST(),
-                input.isOFPATENQUEUE(),
-                input.isOFPATVENDOR());
+        return ByteBufUtils.fillBitMask(0, input.isOFPATOUTPUT(), input.isOFPATSETVLANVID(), input.isOFPATSETVLANPCP(),
+                input.isOFPATSTRIPVLAN(), input.isOFPATSETDLSRC(), input.isOFPATSETDLDST(), input.isOFPATSETNWSRC(),
+                input.isOFPATSETNWDST(), input.isOFPATSETNWTOS(), input.isOFPATSETTPSRC(), input.isOFPATSETTPDST(),
+                input.isOFPATENQUEUE(), input.isOFPATVENDOR());
     }
 }

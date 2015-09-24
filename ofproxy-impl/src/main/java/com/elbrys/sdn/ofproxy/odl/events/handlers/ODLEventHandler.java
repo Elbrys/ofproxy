@@ -10,6 +10,12 @@ import com.elbrys.sdn.ofproxy.odl.events.ODLEvent;
 import com.elbrys.sdn.ofproxy.odl.events.PacketInEvent;
 import com.elbrys.sdn.ofproxy.odl.events.RemoveNodeEvent;
 
+/**
+ * ODL event handler
+ * 
+ * @author igork
+ * 
+ */
 public final class ODLEventHandler {
     private static final Logger LOG = LoggerFactory.getLogger(ODLEventHandler.class);
 

@@ -26,6 +26,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 
 import com.elbrys.sdn.ofproxy.openflow.protocol.OF10FeaturesRequestMessage;
 
+/**
+ * Class represents mapping between OF message type and class representing the
+ * message
+ * 
+ * @author igork
+ * 
+ */
 public final class TypeToClassMapInit {
 
     public static void initializeTypeToClassMap(final Map<TypeToClassKey, Class<?>> messageClassMap) {

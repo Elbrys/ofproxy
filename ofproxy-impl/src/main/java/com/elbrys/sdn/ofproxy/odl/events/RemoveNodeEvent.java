@@ -5,6 +5,12 @@ import lombok.Getter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
+/**
+ * ODL remove node event
+ * 
+ * @author igork
+ * 
+ */
 @lombok.AllArgsConstructor(staticName = "create")
 public class RemoveNodeEvent implements ODLEvent {
     @Getter

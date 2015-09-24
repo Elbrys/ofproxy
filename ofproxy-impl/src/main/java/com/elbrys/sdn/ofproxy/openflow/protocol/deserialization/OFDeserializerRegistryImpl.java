@@ -26,8 +26,8 @@ public final class OFDeserializerRegistryImpl implements DeserializerRegistry {
         // register message deserializers
         OFMessageDeserialezerInit.registerMessageDeserializers(this);
         // register common structure deserializers
-        registerDeserializer(new MessageCodeKey(EncodeConstants.OF10_VERSION_ID,
-                EncodeConstants.EMPTY_VALUE, MatchV10.class), new OF10MatchDeserializer());
+        registerDeserializer(new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, EncodeConstants.EMPTY_VALUE,
+                MatchV10.class), new OF10MatchDeserializer());
         // register match entry deserializers
         MatchEntryDeserializerInitializer.registerMatchEntryDeserializers(this);
         // register action deserializers

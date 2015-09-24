@@ -26,40 +26,48 @@ import com.elbrys.sdn.ofproxy.openflow.queues.InboundMsgQueue;
 import com.elbrys.sdn.ofproxy.openflow.queues.OFMsgsQueue;
 import com.elbrys.sdn.ofproxy.openflow.queues.OutboundMsgQueue;
 
+/**
+ * Class responsible for managing events coming from third party OF controllers
+ * 
+ * @author igork
+ * 
+ */
 public final class OpenflowMgr {
     private static final Logger LOG = LoggerFactory.getLogger(OpenflowMgr.class);
-    
+
     private static final long CONNECTION_TIMEOUT = 5000;
     private static final int MSG_QUEUE_SIZE = 1000;
-	
+
     private ExecutorService executor;
     private OFMsgsQueue ofMsgs;
     private InboundMsgQueue inboundMsgs;
     private OutboundMsgQueue outboundMsgs;
     private PacketProcessingService pps;
     private SalFlowService fs;
-    
-	public OpenflowMgr(final ConsumerContext sess, ExecutorService executor) {
+
+    /**
+     * OpenflowMgr constructor
+     * @param sess ODL consumer context
+     * @param executor Executor service
+     */
+    public OpenflowMgr(final ConsumerContext sess, ExecutorService executor) {
         LOG.debug("Openflow manager constructor started.");
-		this.executor = executor;
+        this.executor = executor;
         ofMsgs = new OFMsgsQueue(MSG_QUEUE_SIZE, sess);
         inboundMsgs = new InboundMsgQueue(MSG_QUEUE_SIZE);
-		outboundMsgs = new OutboundMsgQueue(MSG_QUEUE_SIZE);
+        outboundMsgs = new OutboundMsgQueue(MSG_QUEUE_SIZE);
         LOG.debug("Openflow manager constructor finished.");
         LOG.debug("Openflow manager constructor registering node listener.");
         pps = sess.getRpcService(PacketProcessingService.class);
         fs = sess.getRpcService(SalFlowService.class);
-	}
-    
-	public void stop() {
-        ofMsgs.stop();
-        inboundMsgs.stop();
-        outboundMsgs.stop();
-	}
+    }
 
-	public void start() {
+    /**
+     * Starts OpenFlowMgr
+     */
+    public void start() {
         LOG.debug("Openflow manager starting.");
-	    // Create inbound/outbound threads 
+        // Create inbound/outbound threads
         LOG.debug("Openflow manager starting ofMsgs.");
         executor.execute(ofMsgs);
         LOG.debug("Openflow manager starting inboundMsgs.");
@@ -67,10 +75,25 @@ public final class OpenflowMgr {
         LOG.debug("Openflow manager starting outboundMsgs.");
         executor.execute(outboundMsgs);
         LOG.debug("Openflow manager started.");
-		
-	}
-	
-	public Client addClient(final InstanceIdentifier<Node> nodePath, final ClientConfig cfg) {
+
+    }
+
+    /**
+     * Stops OpenflowMgr
+     */
+    public void stop() {
+        ofMsgs.stop();
+        inboundMsgs.stop();
+        outboundMsgs.stop();
+    }
+
+    /**
+     * Creates connection to third party OF controller
+     * @param nodePath ODL node path
+     * @param cfg Connection configuration
+     * @return OF client context
+     */
+    public Client addConnection(final InstanceIdentifier<Node> nodePath, final ClientConfig cfg) {
         LOG.debug("Openflow manager addClient {} {}.", nodePath, cfg);
         Client sc = new Client(nodePath, cfg, inboundMsgs, this);
         executor.execute(sc);
@@ -82,14 +105,24 @@ public final class OpenflowMgr {
             return null;
         }
         return sc;
-	}
+    }
 
+    /**
+     * Consumes message from OF controller
+     * @param client OF controller
+     * @param ofMsg OF message
+     */
     public void consume(final Client client, final DataObject ofMsg) {
         if (!ofMsgs.offer(OFClientMsg.create(client, ofMsg))) {
             LOG.warn("Unable to queue client's OF message. Client {}, OFMessage {}", client, ofMsg);
         }
     }
 
+    /**
+     * Sends message to OF controller
+     * @param client OF controller
+     * @param ofMsg OF message
+     */
     public void send(final Client client, final DataObject ofMsg) {
         try {
             ByteBuf out = client.getCtxt().alloc().buffer();
@@ -105,10 +138,18 @@ public final class OpenflowMgr {
         }
     }
 
+    /**
+     * Sends Packet Out message.
+     * @param pktOut ODL PacketOut message
+     */
     public void transmitPacket(final TransmitPacketInput pktOut) {
         pps.transmitPacket(pktOut);
     }
 
+    /**
+     * Sends FlowMod message
+     * @param flow ODL FlowMod message
+     */
     public void addFlow(final AddFlowInput flow) {
         fs.addFlow(flow);
     }

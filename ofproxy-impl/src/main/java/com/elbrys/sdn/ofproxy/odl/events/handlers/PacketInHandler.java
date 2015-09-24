@@ -20,21 +20,28 @@ import com.elbrys.sdn.ofproxy.odl.events.PacketInEvent;
 import com.elbrys.sdn.ofproxy.openflow.Client;
 import com.elbrys.sdn.ofproxy.openflow.ClientList;
 
+/**
+ * ODL OacketIn event handler
+ * 
+ * @author igork
+ * 
+ */
 public final class PacketInHandler {
     private static final Logger LOG = LoggerFactory.getLogger(PacketInHandler.class);
 
     public static void consume(final PacketInEvent event) {
-        
-        ClientList cl = OFProxy.getInstance().getClientList(event.getNodePath());
+
+        ClientList cl = OFProxy.getInstance().getConnections(event.getNodePath());
         if (cl != null) {
-            for (Client client:cl.getClients().values()) {
+            for (Client client : cl.getClients().values()) {
                 PacketInMessage pim = createPacketIn(client, event.getPkt());
                 if (pim != null) {
                     client.send(pim);
                 }
             }
         } else {
-            // Received PacketIn message from unmanaged or one of the proxy nodes.
+            // Received PacketIn message from unmanaged or one of the proxy
+            // nodes.
             // Skip packet.
         }
     }
@@ -51,7 +58,7 @@ public final class PacketInHandler {
         pimb.setData(pkt.getPayload());
         return pimb.build();
     }
-    
+
     private static PacketInReason getReason(
             Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketInReason> packetInReason) {
         if (packetInReason.getName().equals(NoMatch.class.getName())) {
@@ -66,22 +73,19 @@ public final class PacketInHandler {
         }
     }
 
-
     public static int getInPort(PacketReceived pkt) {
         // Get the Ingress nodeConnectorRef
         final NodeConnectorRef ncr = pkt.getIngress();
 
         // Get the instance identifier for the nodeConnectorRef
         @SuppressWarnings("unchecked")
-        final InstanceIdentifier<NodeConnector> ncri =
-                (InstanceIdentifier<NodeConnector>) ncr.getValue();
+        final InstanceIdentifier<NodeConnector> ncri = (InstanceIdentifier<NodeConnector>) ncr.getValue();
 
-        final NodeConnectorKey key =
-                InstanceIdentifier.<NodeConnector, NodeConnectorKey>keyOf(ncri);
+        final NodeConnectorKey key = InstanceIdentifier.<NodeConnector, NodeConnectorKey> keyOf(ncri);
 
         String[] split = key.getId().getValue().split(":");
         if (split[split.length - 1].equals("LOCAL")) {
-            return 0xfffffffe; //OFPP_LOCAL
+            return 0xfffffffe; // OFPP_LOCAL
         } else {
             return Integer.decode(split[split.length - 1]);
         }

@@ -6,6 +6,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.service.rev130819.Swit
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
+/**
+ * ODL Flow removed event
+ * 
+ * @author igork
+ * 
+ */
 @lombok.AllArgsConstructor(staticName = "create")
 public class FlowRemovedEvent implements ODLEvent {
     @Getter
@@ -16,7 +22,7 @@ public class FlowRemovedEvent implements ODLEvent {
     public InstanceIdentifier<Node> getNodePath() {
         return (InstanceIdentifier<Node>) flow.getNode().getValue();
     }
-    
+
     @Override
     public boolean isCheckNode() {
         return true;

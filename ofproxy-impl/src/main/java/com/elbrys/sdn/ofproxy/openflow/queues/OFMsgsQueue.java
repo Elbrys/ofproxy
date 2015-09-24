@@ -35,13 +35,13 @@ public final class OFMsgsQueue implements Runnable {
                 e.printStackTrace();
             }
             if (msg != null) {
-//                LOG.debug("-- OF message {}", msg);
+                // LOG.debug("-- OF message {}", msg);
                 ofHandler.consume(msg);
             }
         }
     }
 
-   public void stop() {
+    public void stop() {
         running = false;
     }
 
@@ -50,9 +50,8 @@ public final class OFMsgsQueue implements Runnable {
             LOG.debug("Unable to add element {} to OF message queue. Queue size: {}", clientMsg, ofMsgs.size());
             return false;
         }
-//        LOG.debug(" Msg {} added to OF message queue", clientMsg);
+        // LOG.debug(" Msg {} added to OF message queue", clientMsg);
         return true;
     }
 
-
- }
+}

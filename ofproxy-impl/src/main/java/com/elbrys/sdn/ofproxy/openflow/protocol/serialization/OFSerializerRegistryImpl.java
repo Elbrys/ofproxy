@@ -35,7 +35,8 @@ public final class OFSerializerRegistryImpl implements SerializerRegistry {
         // Openflow message type serializers
         OFMessageSerializerInit.registerMessageSerializers(this);
         // match structure serializers
-        registerSerializer(new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, MatchV10.class), new OF10MatchSerializer());
+        registerSerializer(new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, MatchV10.class),
+                new OF10MatchSerializer());
         // match entry serializers
         MatchEntriesInitializer.registerMatchEntrySerializers(this);
         // action serializers
@@ -60,16 +61,14 @@ public final class OFSerializerRegistryImpl implements SerializerRegistry {
     }
 
     @Override
-    public <KEY_TYPE> void registerSerializer(
-            final MessageTypeKey<KEY_TYPE> msgTypeKey, OFGeneralSerializer serializer) {
+    public <KEY_TYPE> void registerSerializer(final MessageTypeKey<KEY_TYPE> msgTypeKey, OFGeneralSerializer serializer) {
         if ((msgTypeKey == null) || (serializer == null)) {
             throw new IllegalArgumentException("MessageTypeKey or Serializer is null");
         }
         OFGeneralSerializer serInRegistry = registry.put(msgTypeKey, serializer);
         if (serInRegistry != null) {
             LOGGER.debug("Serializer for key " + msgTypeKey + " overwritten. Old serializer: "
-                    + serInRegistry.getClass().getName() + ", new serializer: "
-                    + serializer.getClass().getName() );
+                    + serInRegistry.getClass().getName() + ", new serializer: " + serializer.getClass().getName());
         }
         if (serializer instanceof SerializerRegistryInjector) {
             ((SerializerRegistryInjector) serializer).injectSerializerRegistry(this);

@@ -13,7 +13,7 @@ public final class EchoRequestHandler {
 
     public static void consume(final OFClientMsg msg) {
         Client client = msg.getClient();
-        EchoReplyInput erm = getEchoReply((EchoRequestMessage)msg.getMsg()); 
+        EchoReplyInput erm = getEchoReply((EchoRequestMessage) msg.getMsg());
         if (erm == null) {
             LOG.warn("Unable to create echo reply.");
             return;

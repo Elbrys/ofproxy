@@ -10,6 +10,12 @@ import org.slf4j.LoggerFactory;
 import com.elbrys.sdn.ofproxy.odl.events.ODLEvent;
 import com.elbrys.sdn.ofproxy.odl.events.handlers.ODLEventHandler;
 
+/**
+ * Queue responsible for handling ODL events
+ * 
+ * @author igork
+ * 
+ */
 public final class ODLEventQueue implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(ODLEventQueue.class);
 
@@ -41,18 +47,25 @@ public final class ODLEventQueue implements Runnable {
         }
     }
 
-   public void stop() {
+    /**
+     * Stops queue
+     */
+    public void stop() {
         running = false;
     }
 
+    /**
+     * Offers an ODL message to queue
+     * @param odlEvent
+     * @return
+     */
     public boolean offer(final ODLEvent odlEvent) {
         if (!ofMsgs.offer(odlEvent)) {
             LOG.debug("Unable to add element {} to ODL event queue. Queue size: {}", odlEvent, ofMsgs.size());
             return false;
         }
-//        LOG.debug(" Msg {} added to OF message queue", clientMsg);
+        // LOG.debug(" Msg {} added to OF message queue", clientMsg);
         return true;
     }
 
-
- }
+}

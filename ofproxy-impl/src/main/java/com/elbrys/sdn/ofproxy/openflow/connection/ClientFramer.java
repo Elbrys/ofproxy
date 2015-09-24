@@ -6,7 +6,6 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-
 package com.elbrys.sdn.ofproxy.openflow.connection;
 
 import io.netty.buffer.ByteBuf;
@@ -17,6 +16,13 @@ import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Decoder that splits the received ChannelBuffers dynamically by the value of
+ * the length field in the message
+ * 
+ * @author igork
+ * 
+ */
 public class ClientFramer extends LengthFieldBasedFrameDecoder {
 
     /** Length of OpenFlow 1.3 header */
@@ -32,17 +38,16 @@ public class ClientFramer extends LengthFieldBasedFrameDecoder {
     public ClientFramer() {
         super(MAX_FRAME_LENGTH, LENGTH_FIELD_OFFSET, LENGTH_FIELD_LENGTH, LENGTH_ADJUSTMENT, INITIAL_BYTES_TO_STRIP);
     }
-  
+
     @Override
-    protected Object decode(final ChannelHandlerContext ctx, final ByteBuf buf)
-        throws Exception {
+    protected Object decode(final ChannelHandlerContext ctx, final ByteBuf buf) throws Exception {
 
         // THIS IS IMPORTANT!!!!!
         ByteBuf bb = (ByteBuf) super.decode(ctx, buf);
         if (bb == null) {
             return null;
         }
-        
+
         if (bb.readableBytes() < LENGTH_OF_HEADER) {
             LOGGER.debug("skipping bb - too few data for header: " + bb.readableBytes());
             LOGGER.debug("decode " + ByteBufUtils.byteBufToHexString(bb));
@@ -64,5 +69,5 @@ public class ClientFramer extends LengthFieldBasedFrameDecoder {
 
         return messageBuffer;
     }
-  
+
 }

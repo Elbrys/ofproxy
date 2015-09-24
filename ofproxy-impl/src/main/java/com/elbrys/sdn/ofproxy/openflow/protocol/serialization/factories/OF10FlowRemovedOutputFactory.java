@@ -19,7 +19,7 @@ import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowRemovedMessage;
 
-public final class OF10FlowRemovedOutputFactory implements OFSerializer<FlowRemovedMessage>, SerializerRegistryInjector{
+public final class OF10FlowRemovedOutputFactory implements OFSerializer<FlowRemovedMessage>, SerializerRegistryInjector {
     private static final byte MESSAGE_TYPE = 11;
     private static final byte PADDING_IN_FLOW_REMOVED_1 = 1;
     private static final byte PADDING_IN_FLOW_REMOVED_2 = 2;

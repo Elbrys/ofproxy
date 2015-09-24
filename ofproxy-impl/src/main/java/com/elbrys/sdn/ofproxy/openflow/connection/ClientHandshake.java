@@ -16,6 +16,11 @@ import org.slf4j.LoggerFactory;
 import com.elbrys.sdn.ofproxy.openflow.Client;
 import com.google.common.collect.Lists;
 
+/**
+ * Class is responsible for managing OF handshake
+ * @author igork
+ *
+ */
 public final class ClientHandshake {
     private static final Logger LOG = LoggerFactory.getLogger(ClientHandshake.class);
     private static ClientHandshake instance = null;
@@ -46,7 +51,7 @@ public final class ClientHandshake {
 
     }
     
-    public static HelloInput createHelloInput(final short helloVersion, final long helloXid, final List<Short> versionOrder) {
+    private HelloInput createHelloInput(final short helloVersion, final long helloXid, final List<Short> versionOrder) {
         HelloInputBuilder helloInputbuilder = new HelloInputBuilder();
         helloInputbuilder.setVersion(helloVersion);
         helloInputbuilder.setXid(helloXid);

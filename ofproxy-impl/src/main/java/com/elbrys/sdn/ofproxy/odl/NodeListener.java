@@ -16,11 +16,20 @@ import com.elbrys.sdn.ofproxy.impl.OpendaylightMgr;
 import com.elbrys.sdn.ofproxy.odl.events.AddNodeEvent;
 import com.elbrys.sdn.ofproxy.odl.events.RemoveNodeEvent;
 
+/**
+ * ODL node event listener
+ * 
+ * @author igork
+ * 
+ */
 public final class NodeListener implements DataChangeListener {
-    private static final Logger LOG = LoggerFactory
-            .getLogger(NodeListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NodeListener.class);
     private final OpendaylightMgr odlMgr;
 
+    /**
+     * NodeListener constructor
+     * @param opendaylightMgr
+     */
     public NodeListener(OpendaylightMgr opendaylightMgr) {
         this.odlMgr = opendaylightMgr;
     }
@@ -28,10 +37,8 @@ public final class NodeListener implements DataChangeListener {
     @Override
     public void onDataChanged(final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> event) {
         // Check removed nodes
-        for (final InstanceIdentifier<?> removedItem : event
-                .getRemovedPaths()) {
-            InstanceIdentifier<Node> nodePath = removedItem
-                    .firstIdentifierOf(Node.class);
+        for (final InstanceIdentifier<?> removedItem : event.getRemovedPaths()) {
+            InstanceIdentifier<Node> nodePath = removedItem.firstIdentifierOf(Node.class);
             if (nodePath == null) {
                 LOG.error("Unable to find node info. {}", removedItem);
                 continue;
@@ -45,37 +52,33 @@ public final class NodeListener implements DataChangeListener {
         }
 
         // Check added nodes
-        for (Entry<InstanceIdentifier<?>, DataObject> addedItem : event
-                .getCreatedData().entrySet()) {
+        for (Entry<InstanceIdentifier<?>, DataObject> addedItem : event.getCreatedData().entrySet()) {
             if (addedItem.getValue() instanceof FlowCapableNode) {
                 // Switch capabilities can be taken from FlowCapableNode if
                 // necessary
-                InstanceIdentifier<Node> nodePath =
-                    addedItem.getKey().firstIdentifierOf(Node.class);
-                LOG.debug("Node {}", (FlowCapableNode)addedItem.getValue());
+                InstanceIdentifier<Node> nodePath = addedItem.getKey().firstIdentifierOf(Node.class);
+                LOG.debug("Node {}", (FlowCapableNode) addedItem.getValue());
                 if (nodePath == null) {
-                    LOG.error("Unable to find node info. {}",
-                            addedItem.getKey());
+                    LOG.error("Unable to find node info. {}", addedItem.getKey());
                     continue;
                 }
                 nodeAdded(nodePath);
             }
             if (addedItem.getValue() instanceof FlowCapableNodeConnector) {
-                LOG.debug("Nodeconnector {}", (FlowCapableNodeConnector)addedItem.getValue());
+                LOG.debug("Nodeconnector {}", (FlowCapableNodeConnector) addedItem.getValue());
             }
         }
 
         // Current implementation do not provide data for updated nodes.
     }
 
+    private void nodeAdded(final InstanceIdentifier<Node> nodePath) {
+        LOG.debug("Node added {}", nodePath);
+        odlMgr.odlEvent(AddNodeEvent.create(nodePath));
+    }
+
     private void nodeRemoved(final InstanceIdentifier<Node> nodePath) {
         LOG.debug("Node removed {}", nodePath);
         odlMgr.odlEvent(RemoveNodeEvent.create(nodePath));
-    }
-
-
-    private void nodeAdded(final InstanceIdentifier<Node> nodePath) {
-        LOG.debug("Node added {} OFProxy {}", nodePath, odlMgr);
-        odlMgr.odlEvent(AddNodeEvent.create(nodePath));
     }
 }

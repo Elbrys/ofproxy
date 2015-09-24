@@ -15,7 +15,7 @@ import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketInMessage;
 
-public final class OF10PacketInMessageOutputFactory implements OFSerializer<PacketInMessage>{
+public final class OF10PacketInMessageOutputFactory implements OFSerializer<PacketInMessage> {
     private static final byte MESSAGE_TYPE = 10;
     private static final byte PADDING_IN_PACKET_IN = 1;
 
@@ -24,7 +24,7 @@ public final class OF10PacketInMessageOutputFactory implements OFSerializer<Pack
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeInt(message.getBufferId().intValue());
         int totalLenIndex = outBuffer.readableBytes();
-        outBuffer.writeShort(0);  // Replace it with real length
+        outBuffer.writeShort(0); // Replace it with real length
         outBuffer.writeShort(message.getInPort());
         outBuffer.writeByte(message.getReason().getIntValue());
         outBuffer.writeZero(PADDING_IN_PACKET_IN);
