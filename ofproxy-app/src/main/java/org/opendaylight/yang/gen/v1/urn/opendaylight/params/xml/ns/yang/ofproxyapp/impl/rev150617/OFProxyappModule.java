@@ -34,27 +34,27 @@ public class OFProxyappModule
     @Override
     public java.lang.AutoCloseable createInstance() {
         LOG.info("OFProxyappModule Create Instance.");
-        final OFPRoxyApp exampleApp = new OFPRoxyApp();
+        final OFPRoxyApp ofProxyApp = new OFPRoxyApp();
 
         LOG.info("OFProxyappModule Regiser RPC.");
         @SuppressWarnings("unused")
         final BindingAwareBroker.RpcRegistration<OfproxyappService> rpcRegistration = getRpcRegistryDependency()
-                .addRpcImplementation(OfproxyappService.class, exampleApp);
+                .addRpcImplementation(OfproxyappService.class, ofProxyApp);
 
-        getBrokerDependency().registerConsumer(exampleApp, null);
+        getBrokerDependency().registerConsumer(ofProxyApp, null);
 
         // Wrap proxyApp as AutoCloseable and close registrations to md-sal at
         // close(). The close method is where you would generally clean up
         // thread pools
         // etc.
-        final class AutoCloseableExampleApp implements AutoCloseable {
+        final class AutoCloseableOFProxyApp implements AutoCloseable {
 
             @Override
             public void close() throws Exception {
-                exampleApp.close();
+                ofProxyApp.close();
             }
         }
-        return new AutoCloseableExampleApp();
+        return new AutoCloseableOFProxyApp();
     }
 
 }

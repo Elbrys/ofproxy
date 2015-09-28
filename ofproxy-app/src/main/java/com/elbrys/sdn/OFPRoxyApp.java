@@ -1,26 +1,19 @@
 package com.elbrys.sdn;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ConsumerContext;
 import org.opendaylight.controller.sal.binding.api.BindingAwareConsumer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ofproxyapp.api.rev150924.OfproxyAddInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ofproxyapp.api.rev150924.OfproxyAddOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ofproxyapp.api.rev150924.OfproxyAddOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ofproxyapp.api.rev150924.OfproxyappService;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.elbrys.sdn.ofproxy.OFProxy;
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
 
 public class OFPRoxyApp implements BindingAwareConsumer, OfproxyappService {
@@ -34,7 +27,7 @@ public class OFPRoxyApp implements BindingAwareConsumer, OfproxyappService {
 
     @Override
     public Future<RpcResult<OfproxyAddOutput>> ofproxyAdd(OfproxyAddInput input) {
-        LOG.info("ExampleAppImpl exampleRpc");
+        LOG.info("OFPRoxyApp ofproxyAdd");
         // Build output message
         OfproxyAddOutputBuilder outBuilder = new OfproxyAddOutputBuilder();
         
@@ -44,12 +37,12 @@ public class OFPRoxyApp implements BindingAwareConsumer, OfproxyappService {
     }
 
     public void close() {
-        LOG.info("ExampleAppImpl close");
+        LOG.info("OFPRoxyApp close");
     }
 
     @Override
     public void onSessionInitialized(ConsumerContext context) {
-        LOG.info("ExampleAppImpl onSessionInitialized");
+        LOG.info("OFPRoxyApp onSessionInitialized");
         ofProxy = new OFProxy(context);
         ofProxy.start();
     }
