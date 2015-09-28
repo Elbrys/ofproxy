@@ -1,0 +1,37 @@
+module ofproxyapp {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:ofproxyapp:api";
+    prefix "ofproxyapp-api";
+
+    revision "2015-09-24" {
+        description "Initial revision of ofproxy model";
+    }
+    
+    rpc ofproxy-add {
+        input {
+            leaf datapathId {
+                type string;
+                mandatory true;
+                description
+                     "DatapathId of node connected to ODL.";
+            }
+            leaf controllerIp {
+                type string;
+                mandatory true;
+                description
+                     "IP address of third party OF controller.";
+            }
+            leaf controllerPort {
+                type uint16;
+                mandatory true;
+                description
+                     "Port number of third party OF controller.";
+            }
+        }
+        output {
+            leaf result {
+                type string;
+            }
+        }
+    }
+}

@@ -10,10 +10,28 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 <features name="ofproxy-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">
+<!--
   <repository>mvn:org.opendaylight.controller/features-mdsal/${mdsal.version}/xml/features</repository>
   <feature name='ofproxy' version='${project.version}' description='Elbrys :: ofproxy'>
     <feature version='${mdsal.version}'>odl-mdsal-broker</feature>
     <bundle>mvn:com.elbrys.sdn/ofproxy-impl/${project.version}</bundle>
+  </feature>
+-->
+  
+  <repository>mvn:org.opendaylight.yangtools/features-yangtools/${yangtools.version}/xml/features</repository>
+  <repository>mvn:org.opendaylight.controller/features-mdsal/${mdsal.version}/xml/features</repository>
+  <repository>mvn:org.opendaylight.controller/features-restconf/${mdsal.version}/xml/features</repository>
+  <feature name='ofproxyapp-api' version='${project.version}' description='Elbrys :: ofproxyapp :: api'>
+    <feature version='${yangtools.version}'>odl-yangtools-models</feature>
+    <bundle>mvn:com.elbrys.sdn/ofproxy-api/${project.version}</bundle>
+  </feature>
+  <feature name='ofproxyapp' version='${project.version}' description='Elbrys :: ofproxyapp'>
+    <feature version="${mdsal.version}">odl-mdsal-remoterpc-connector</feature>
+    <feature version='${mdsal.version}'>odl-mdsal-broker</feature>
+    <feature version='${project.version}'>ofproxyapp-api</feature>
+    <bundle>mvn:com.elbrys.sdn/ofproxy-impl/${project.version}</bundle>
+    <bundle>mvn:com.elbrys.sdn/ofproxy-app/${project.version}</bundle>
+    <configfile finalname="${configfile.directory}/49-ofproxyapp.xml">mvn:com.elbrys.sdn/ofproxy-cfg/${project.version}/xml/config</configfile>
   </feature>
 
 </features>

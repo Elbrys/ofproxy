@@ -85,7 +85,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.elbrys.sdn.ofproxy.Activator;
+import com.elbrys.sdn.ofproxy.OFProxy;
 import com.elbrys.sdn.ofproxy.openflow.Client;
 import com.elbrys.sdn.ofproxy.openflow.ClientNode;
 
@@ -391,7 +391,7 @@ public final class OF10StatsRequestHandler {
         NodeConnectorKey nConKey = new NodeConnectorKey(nodeConnectorId);
         InstanceIdentifier<NodeConnector> path = client.getNodePath().child(NodeConnector.class, nConKey).builder()
                 .toInstance();
-        NodeConnector nc = Activator.getConfigObject(path);
+        NodeConnector nc = OFProxy.getConfigObject(path);
         FlowCapableNodeConnector fcnc = nc.getAugmentation(FlowCapableNodeConnector.class);
         return fcnc;
     }

@@ -12,5 +12,9 @@ target
 /publish
 /.idea
 /.metadata
+*/src/main/java/org/opendaylight/yang
+*/src/main/yang-gen-sal
+*/src/main/yang-gen-config
+!OFProxyappModule.java
 *.iml
 */*.iml

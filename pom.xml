@@ -13,6 +13,9 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>ofproxy-api</module>
+    <module>ofproxy-app</module>
+    <module>ofproxy-cfg</module>
     <module>ofproxy-impl</module>
     <module>ofproxy-features</module>
   </modules>

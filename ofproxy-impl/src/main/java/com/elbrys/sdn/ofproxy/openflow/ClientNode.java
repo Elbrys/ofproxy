@@ -16,7 +16,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.elbrys.sdn.ofproxy.Activator;
+import com.elbrys.sdn.ofproxy.OFProxy;
 
 /**
  * Helper class providing useful ODL data for ODL node
@@ -47,7 +47,7 @@ public class ClientNode {
      * @return ODL node object
      */
     public Node getNode() {
-        return Activator.getConfigObject(nodePath);
+        return OFProxy.getConfigObject(nodePath);
     }
 
     /**
