@@ -149,6 +149,8 @@ public final class OFProxy {
      * @param controllerPort Third party controller port
      */
     public String addConnection(String datapathId, String controllerIp, Integer controllerPort) {
+
+        // TODO Create list of configured clients
         if (clientsCfg.put(datapathId, ClientConfig.create(controllerIp, controllerPort, false)) != null) {
             return "New client configuration has been added.";
         } else {

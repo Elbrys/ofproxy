@@ -36,6 +36,11 @@ public class OFProxyappModule
         LOG.info("OFProxyappModule Create Instance.");
         final OFPRoxyApp ofProxyApp = new OFPRoxyApp();
 
+        // To test RPC call
+        // http://localhost:8181/apidoc/explorer/index.html
+        // goto ofproxyapp and post 
+        // {"ofproxyapp:input":{"datapathId":"101","controllerIp":"1.1.1.1","controllerPort":"101" }}
+
         LOG.info("OFProxyappModule Regiser RPC.");
         @SuppressWarnings("unused")
         final BindingAwareBroker.RpcRegistration<OfproxyappService> rpcRegistration = getRpcRegistryDependency()
