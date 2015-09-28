@@ -23,7 +23,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.P
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.flow.capable.port.State;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionTypeV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.CapabilitiesV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfigV10;
@@ -33,7 +32,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.features.reply.PhyPort;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.features.reply.PhyPortBuilder;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +63,9 @@ public final class OF10FeaturesRequestHandler {
         GetFeaturesOutputBuilder gfob = new GetFeaturesOutputBuilder();
         gfob.setXid(client.getXid());
         gfob.setVersion((short) EncodeConstants.OF10_VERSION_ID);
-        gfob.setDatapathId(new BigInteger(getDpId(client.getNodePath()), 16));
+        // FIXME TODO Only one controller has been used in development test environment.
+        // Add one to DPID To avoid creating multiple controller connections 
+        gfob.setDatapathId(BigInteger.valueOf(client.getDatapathId().longValue() + 1));
         SwitchFeatures sf = fcn.getSwitchFeatures();
         gfob.setBuffers(sf.getMaxBuffers());
         gfob.setTables(sf.getMaxTables());
@@ -204,21 +204,4 @@ public final class OF10FeaturesRequestHandler {
         return new CapabilitiesV10(isOFPCARPMATCHIP, isOFPCFLOWSTATS, isOFPCIPREASM, isOFPCPORTSTATS, isOFPCQUEUESTATS,
                 isOFPCRESERVED, isOFPCSTP, isOFPCTABLESTATS);
     }
-
-    public static String getDpId(final InstanceIdentifier<Node> instanceIdentifier) {
-        String daylightDpID = instanceIdentifier.firstKeyOf(Node.class, NodeKey.class).getId().getValue();
-        String[] split = daylightDpID.split(":");
-
-        // If the length is just one then this cannot be the new MD-SAL
-        // style node connector Id which is of the form openflow:1.
-        String dpidStr;
-        if (split.length == 1) {
-            dpidStr = daylightDpID;
-        } else {
-            dpidStr = split[split.length - 1];
-        }
-
-        return Long.toHexString(Long.valueOf(dpidStr));
-    }
-
 }

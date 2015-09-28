@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import com.elbrys.sdn.ofproxy.OFProxy;
 import com.elbrys.sdn.ofproxy.odl.events.AddNodeEvent;
+import com.elbrys.sdn.ofproxy.openflow.ClientConfigList;
+import com.elbrys.sdn.ofproxy.openflow.ClientNode;
 import com.elbrys.sdn.ofproxy.openflow.connection.ClientConfig;
 
 /**
@@ -15,24 +17,17 @@ import com.elbrys.sdn.ofproxy.openflow.connection.ClientConfig;
  */
 public final class AddNodeHandler {
     private static final Logger LOG = LoggerFactory.getLogger(AddNodeHandler.class);
-    // TODO remove clientAdded flag in release version.
-    public static int clientAdded = 0;
 
     public static void consume(final AddNodeEvent event) {
-        // TODO check configuration to verify that we need to create commection
-        // to third party controller.
-        if (clientAdded == 0) {
-            // Get client configuration from configuration file
-            ClientConfig cc = ClientConfig.create("127.0.0.1", 6633, false);
-            clientAdded++;
-            // TODO remove sleep in release.
-            try {
-                Thread.sleep(7000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        ClientNode cn = new ClientNode(event.getNodePath());
+        ClientConfigList ccl = OFProxy.getInstance().getConfiguredClient(cn.getDatapathId().toString());
+        if (ccl != null) {
+            for (ClientConfig cc : ccl.getClients().values()) {
+                if (!OFProxy.getInstance().isClientConnected(event.getNodePath(), cc)) {
+                    LOG.debug("Add Client {} ", cc);
+                    OFProxy.getInstance().addConnection(event.getNodePath(), cc);
+                }
             }
-            LOG.debug("Add Client config: {} ", cc);
-            OFProxy.getInstance().addConnection(event.getNode(), cc);
         }
     }
 }
