@@ -63,7 +63,7 @@ public final class OF10FeaturesRequestHandler {
         GetFeaturesOutputBuilder gfob = new GetFeaturesOutputBuilder();
         gfob.setXid(client.getXid());
         gfob.setVersion((short) EncodeConstants.OF10_VERSION_ID);
-        // FIXME TODO Only one controller has been used in development test environment.
+        // FIXME in release Only one controller has been used in development test environment.
         // Add one to DPID To avoid creating multiple controller connections 
         gfob.setDatapathId(BigInteger.valueOf(client.getDatapathId().longValue() + 1));
         SwitchFeatures sf = fcn.getSwitchFeatures();

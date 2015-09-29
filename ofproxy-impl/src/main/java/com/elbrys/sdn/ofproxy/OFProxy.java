@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import com.elbrys.sdn.ofproxy.impl.OpendaylightMgr;
 import com.elbrys.sdn.ofproxy.impl.OpenflowMgr;
-import com.elbrys.sdn.ofproxy.openflow.Client;
 import com.elbrys.sdn.ofproxy.openflow.ClientConfigList;
 import com.elbrys.sdn.ofproxy.openflow.ClientList;
 import com.elbrys.sdn.ofproxy.openflow.connection.ClientConfig;
@@ -44,7 +43,6 @@ public final class OFProxy {
     private ExecutorService executor;
     private OpenflowMgr ofMgr;
     private OpendaylightMgr odlMgr;
-    private ConcurrentHashMap<InstanceIdentifier<Node>, ClientList> clients;
     private ConcurrentHashMap<String, ClientConfigList> clientsCfg;
 
     /**
@@ -60,7 +58,6 @@ public final class OFProxy {
         ofMgr = new OpenflowMgr(sess, executor);
         odlMgr = new OpendaylightMgr(sess, executor);
         LOG.debug("OFProxy constructor finished.");
-        clients = new ConcurrentHashMap<InstanceIdentifier<Node>, ClientList>();
         clientsCfg = new ConcurrentHashMap<String, ClientConfigList>();
         OFProxy.instance = this;
     }
@@ -99,54 +96,6 @@ public final class OFProxy {
         LOG.debug("OFProxy started.");
     }
 
-    /**
-     * Creates connection to third party controller.
-     * 
-     * @param nodePath
-     *            ODL node
-     * @param cfg
-     *            Controller connection configuration
-     */
-    public void addConnection(InstanceIdentifier<Node> nodePath, ClientConfig cfg) {
-        // try to establish connection
-        Client client = ofMgr.addConnection(nodePath, cfg);
-        if (client != null) {
-            // Register client
-            ClientList cl = clients.get(nodePath);
-            if (cl == null) {
-                cl = new ClientList();
-                clients.putIfAbsent(nodePath, cl);
-            }
-            cl.addConnection(client);
-        }
-    }
-
-    /**
-     * Removes connection to third party controllers connected to target node
-     * 
-     * @param node
-     *            ODL node
-     */
-    public void removeConnections(InstanceIdentifier<Node> node) {
-        ClientList cl = clients.remove(node);
-        if (cl != null) {
-            cl.stop();
-        }
-    }
-
-    /**
-     * Returns list of third party controllers connected to target node
-     * 
-     * @param nodePath
-     *            ODL node
-     * @return list of third party controllers connected to target node
-     */
-    public ClientList getConnections(InstanceIdentifier<Node> nodePath) {
-        if (nodePath == null) {
-            return null;
-        }
-        return clients.get(nodePath);
-    }
 
     /**
      * Adds client configuration
@@ -165,7 +114,7 @@ public final class OFProxy {
         
         checkConnectedNodes();
 
-        // TODO Modify to return some useful information
+        // TODO Modify to return some useful data
         return "New client configuration has been added.";
     }
 
@@ -187,9 +136,9 @@ public final class OFProxy {
             // Go through list of configured controllers and create connection 
             // if connection is not established.
             for (ClientConfig cc: ccl.getClients().values()) {
-                if (!isClientConnected(nodePath, cc)) {
+                if (!ofMgr.isClientConnected(nodePath, cc)) {
                     // Found not connected client. Initiate connection
-                    addConnection(nodePath, cc);
+                    ofMgr.addConnection(nodePath, cc);
                 }
             }
         }
@@ -269,20 +218,46 @@ public final class OFProxy {
     }
 
     /**
+     * Returns list of third party controllers connected to target node
+     * 
+     * @param nodePath
+     *            ODL node
+     * @return list of third party controllers connected to target node
+     */
+    public ClientList getConnections(InstanceIdentifier<Node> nodePath) {
+        return ofMgr.getConnections(nodePath);
+    }
+
+    /**
      * Check if connection is established
      * @param nodePath ODL node path
      * @param cc Client configuration
      * @return true if connection is established
      */
     public boolean isClientConnected(InstanceIdentifier<Node> nodePath, ClientConfig cc) {
-        ClientList cl = clients.get(nodePath);
-        if (cl != null) {
-            Client c = cl.getClients().get(cc.getKey());
-            if (c != null) {
-                LOG.debug("Client {} is already connected", c);
-                return true;
-            }
-        }
-        return false;
+        return ofMgr.isClientConnected(nodePath, cc);
     }
+
+    /**
+     * Creates connection to third party controller.
+     * 
+     * @param nodePath
+     *            ODL node
+     * @param cfg
+     *            Controller connection configuration
+     */
+    public void addConnection(InstanceIdentifier<Node> nodePath, ClientConfig cc) {
+        ofMgr.addConnection(nodePath, cc);
+    }
+
+    /**
+     * Removes connection to third party controllers connected to target node
+     * 
+     * @param node
+     *            ODL node
+     */
+    public void removeConnections(InstanceIdentifier<Node> node) {
+        ofMgr.removeConnections(node);
+    }
+
 }

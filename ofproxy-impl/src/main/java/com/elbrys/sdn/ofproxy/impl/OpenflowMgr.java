@@ -2,6 +2,7 @@ package com.elbrys.sdn.ofproxy.impl;
 
 import io.netty.buffer.ByteBuf;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.elbrys.sdn.ofproxy.openflow.Client;
+import com.elbrys.sdn.ofproxy.openflow.ClientList;
 import com.elbrys.sdn.ofproxy.openflow.ClientMsg;
 import com.elbrys.sdn.ofproxy.openflow.connection.ClientConfig;
 import com.elbrys.sdn.ofproxy.openflow.handlers.OFClientMsg;
@@ -44,6 +46,7 @@ public final class OpenflowMgr {
     private OutboundMsgQueue outboundMsgs;
     private PacketProcessingService pps;
     private SalFlowService fs;
+    private ConcurrentHashMap<InstanceIdentifier<Node>, ClientList> clients;
 
     /**
      * OpenflowMgr constructor
@@ -60,6 +63,7 @@ public final class OpenflowMgr {
         LOG.debug("Openflow manager constructor registering node listener.");
         pps = sess.getRpcService(PacketProcessingService.class);
         fs = sess.getRpcService(SalFlowService.class);
+        clients = new ConcurrentHashMap<InstanceIdentifier<Node>, ClientList>();
     }
 
     /**
@@ -93,7 +97,7 @@ public final class OpenflowMgr {
      * @param cfg Connection configuration
      * @return OF client context
      */
-    public Client addConnection(final InstanceIdentifier<Node> nodePath, final ClientConfig cfg) {
+    public Client createConnection(final InstanceIdentifier<Node> nodePath, final ClientConfig cfg) {
         LOG.debug("Openflow manager addClient {} {}.", nodePath, cfg);
         Client sc = new Client(nodePath, cfg, inboundMsgs, this);
         executor.execute(sc);
@@ -152,5 +156,72 @@ public final class OpenflowMgr {
      */
     public void addFlow(final AddFlowInput flow) {
         fs.addFlow(flow);
+    }
+
+    /**
+     * Creates connection to third party controller.
+     * 
+     * @param nodePath
+     *            ODL node
+     * @param cfg
+     *            Controller connection configuration
+     */
+    public void addConnection(InstanceIdentifier<Node> nodePath, ClientConfig cfg) {
+        // try to establish connection
+        Client client = createConnection(nodePath, cfg);
+        if (client != null) {
+            // Register client
+            ClientList cl = clients.get(nodePath);
+            if (cl == null) {
+                cl = new ClientList();
+                clients.putIfAbsent(nodePath, cl);
+            }
+            cl.addConnection(client);
+        }
+    }
+
+    /**
+     * Removes connection to third party controllers connected to target node
+     * 
+     * @param node
+     *            ODL node
+     */
+    public void removeConnections(InstanceIdentifier<Node> node) {
+        ClientList cl = clients.remove(node);
+        if (cl != null) {
+            cl.stop();
+        }
+    }
+
+    /**
+     * Returns list of third party controllers connected to target node
+     * 
+     * @param nodePath
+     *            ODL node
+     * @return list of third party controllers connected to target node
+     */
+    public ClientList getConnections(InstanceIdentifier<Node> nodePath) {
+        if (nodePath == null) {
+            return null;
+        }
+        return clients.get(nodePath);
+    }
+    
+    /**
+     * Check if connection is established
+     * @param nodePath ODL node path
+     * @param cc Client configuration
+     * @return true if connection is established
+     */
+    public boolean isClientConnected(InstanceIdentifier<Node> nodePath, ClientConfig cc) {
+        ClientList cl = clients.get(nodePath);
+        if (cl != null) {
+            Client c = cl.getClients().get(cc.getKey());
+            if (c != null) {
+                LOG.debug("Client {} is already connected", c);
+                return true;
+            }
+        }
+        return false;
     }
 }

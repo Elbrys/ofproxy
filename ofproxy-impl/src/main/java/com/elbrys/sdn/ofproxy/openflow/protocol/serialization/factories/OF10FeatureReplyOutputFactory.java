@@ -28,9 +28,7 @@ public final class OF10FeatureReplyOutputFactory implements OFSerializer<GetFeat
     @Override
     public void serialize(final GetFeaturesOutput message, final ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
-        // TODO REmove +1 in released version
-        // outBuffer.writeLong(message.getDatapathId().longValue());
-        outBuffer.writeLong(message.getDatapathId().longValue() + 1);
+        outBuffer.writeLong(message.getDatapathId().longValue());
         outBuffer.writeInt(message.getBuffers().intValue());
         outBuffer.writeByte(message.getTables().byteValue());
         outBuffer.writeZero(PADDING_IN_FEATURES_REPLY_HEADER);

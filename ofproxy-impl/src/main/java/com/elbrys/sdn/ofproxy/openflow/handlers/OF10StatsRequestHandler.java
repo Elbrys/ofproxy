@@ -130,16 +130,12 @@ public final class OF10StatsRequestHandler {
         }
 
         if (reply == null) {
-            // TODO fix an issues in stats Reply
-            // LOG.warn("Unable to reply on {}",
-            // message.getMultipartRequestBody());
+            LOG.warn("Unable to reply on {}", message.getMultipartRequestBody());
             return;
         }
-        // LOG.warn("Received  {} {}", message.getType(), message);
 
         MultipartReplyMessage mrm = buildMultipartReplyMessage(message.getType(), client.getXid(), message.getFlags(),
                 reply);
-        // LOG.warn("Send {}", mrm);
 
         client.send(mrm);
 
@@ -208,7 +204,7 @@ public final class OF10StatsRequestHandler {
             }
             // fs.getMatch();
             // mrf.getMatchV10();
-            // TODO COmpare Match vs Match V10 and skip record if necessary
+            // TODO COmpare Match vs Match V10 and skip flow stats if necessary
             retVal.add(convertToFlowStats(client, fs));
         }
 
@@ -312,7 +308,7 @@ public final class OF10StatsRequestHandler {
                         TableStatsBuilder tsb = new TableStatsBuilder();
                         tsb.setTableId(ftsm.getTableId().getValue());
                         tsb.setName(ftsm.getTableId().toString());
-                        // TODO get the following information from ODLr
+                        // TODO get the following information from ODL
                         // tsb.setMaxEntries();
                         tsb.setMaxEntries((long) 256);
                         // tsb.setWildcards();
