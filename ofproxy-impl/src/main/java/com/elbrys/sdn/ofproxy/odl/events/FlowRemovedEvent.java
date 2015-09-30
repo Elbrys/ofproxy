@@ -39,7 +39,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 /**
  * ODL Flow removed event
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 @lombok.AllArgsConstructor(staticName = "create")

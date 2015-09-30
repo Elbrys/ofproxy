@@ -39,7 +39,7 @@ import com.elbrys.sdn.ofproxy.odl.events.PacketInEvent;
 /**
  * ODL PacketIn listener
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class PacketInListener implements PacketProcessingListener {

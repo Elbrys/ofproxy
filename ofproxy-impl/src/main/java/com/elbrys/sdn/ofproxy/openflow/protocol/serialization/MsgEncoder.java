@@ -49,7 +49,7 @@ import com.elbrys.sdn.ofproxy.openflow.TypeToClassMapInit;
 /**
  * OF message encoder
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class MsgEncoder {

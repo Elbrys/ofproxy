@@ -62,7 +62,7 @@ import com.google.common.base.Optional;
  * Class responsible for activation of two main application parts: Opendaylight
  * and OpenFlow managers.
  * 
- * @author igork
+ * @author Igor Kondrakhin
  */
 public final class OFProxy {
     private static final Logger LOG = LoggerFactory.getLogger(OFProxy.class);

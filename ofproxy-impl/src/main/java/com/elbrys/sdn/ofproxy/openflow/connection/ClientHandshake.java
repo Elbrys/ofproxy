@@ -48,7 +48,7 @@ import com.google.common.collect.Lists;
 
 /**
  * Class is responsible for managing OF handshake
- * @author igork
+ * @author Igor Kondrakhin
  *
  */
 public final class ClientHandshake {

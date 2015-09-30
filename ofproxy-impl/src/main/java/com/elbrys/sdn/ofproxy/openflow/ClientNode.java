@@ -51,7 +51,7 @@ import com.elbrys.sdn.ofproxy.OFProxy;
 /**
  * Helper class providing useful ODL data for ODL node
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public class ClientNode {

@@ -55,7 +55,7 @@ import com.elbrys.sdn.ofproxy.odl.queue.ODLEventQueue;
 /**
  * Class responsible for managing ODL events.
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class OpendaylightMgr {

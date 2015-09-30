@@ -38,7 +38,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 /**
  * ODL remove node event
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 @lombok.AllArgsConstructor(staticName = "create")

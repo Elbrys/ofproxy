@@ -43,7 +43,7 @@ import com.elbrys.sdn.ofproxy.odl.events.RemoveNodeEvent;
 /**
  * ODL event handler
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class ODLEventHandler {

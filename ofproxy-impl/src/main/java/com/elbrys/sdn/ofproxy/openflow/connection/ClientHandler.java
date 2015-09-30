@@ -43,7 +43,7 @@ import com.elbrys.sdn.ofproxy.openflow.queues.InboundMsgQueue;
 /**
  * OF packet handler
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public class ClientHandler extends ChannelInboundHandlerAdapter {

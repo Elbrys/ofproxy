@@ -60,7 +60,7 @@ import com.google.common.util.concurrent.SettableFuture;
 /**
  * Class responsible for managinf connection to third party controller
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class Client extends ClientNode implements Runnable {

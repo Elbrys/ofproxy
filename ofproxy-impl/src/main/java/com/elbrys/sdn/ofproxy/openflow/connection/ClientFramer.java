@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * Decoder that splits the received ChannelBuffers dynamically by the value of
  * the length field in the message
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public class ClientFramer extends LengthFieldBasedFrameDecoder {

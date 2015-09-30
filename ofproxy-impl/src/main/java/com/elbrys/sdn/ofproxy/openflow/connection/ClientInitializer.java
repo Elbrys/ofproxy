@@ -42,7 +42,7 @@ import com.google.common.util.concurrent.SettableFuture;
 /**
  * OF connection channel initializer
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class ClientInitializer extends ChannelInitializer<NioSocketChannel> {

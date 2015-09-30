@@ -48,7 +48,7 @@ import com.elbrys.sdn.ofproxy.openflow.protocol.OF10FeaturesRequestMessage;
 /**
  * OF message handler
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class OFMsgHandler {

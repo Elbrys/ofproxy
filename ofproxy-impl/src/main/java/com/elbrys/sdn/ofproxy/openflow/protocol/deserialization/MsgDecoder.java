@@ -51,7 +51,7 @@ import com.elbrys.sdn.ofproxy.openflow.TypeToClassMapInit;
 /**
  * OF message decoder
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class MsgDecoder {

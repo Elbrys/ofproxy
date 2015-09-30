@@ -49,7 +49,7 @@ import com.elbrys.sdn.ofproxy.odl.events.RemoveNodeEvent;
 /**
  * ODL node event listener
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class NodeListener implements DataChangeListener {

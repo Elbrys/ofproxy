@@ -42,7 +42,7 @@ import com.elbrys.sdn.ofproxy.openflow.connection.ClientConfig;
 /**
  * ODL AddNode event handler
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class AddNodeHandler {

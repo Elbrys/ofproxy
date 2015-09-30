@@ -36,7 +36,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 /**
  * ODL events interface
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public interface ODLEvent {

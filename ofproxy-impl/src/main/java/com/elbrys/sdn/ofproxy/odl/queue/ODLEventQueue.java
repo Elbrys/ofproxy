@@ -43,7 +43,7 @@ import com.elbrys.sdn.ofproxy.odl.events.handlers.ODLEventHandler;
 /**
  * Queue responsible for handling ODL events
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class ODLEventQueue implements Runnable {

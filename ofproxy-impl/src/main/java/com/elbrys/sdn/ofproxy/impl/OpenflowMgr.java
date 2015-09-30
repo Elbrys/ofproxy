@@ -61,7 +61,7 @@ import com.elbrys.sdn.ofproxy.openflow.queues.OutboundMsgQueue;
 /**
  * Class responsible for managing events coming from third party OF controllers
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class OpenflowMgr {

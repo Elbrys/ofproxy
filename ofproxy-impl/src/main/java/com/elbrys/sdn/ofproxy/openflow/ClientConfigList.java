@@ -39,7 +39,7 @@ import com.elbrys.sdn.ofproxy.openflow.connection.ClientConfig;
 /**
  * List of configured controllers
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class ClientConfigList {

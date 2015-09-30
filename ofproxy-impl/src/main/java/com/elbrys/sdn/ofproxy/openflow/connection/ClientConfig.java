@@ -36,7 +36,7 @@ import lombok.ToString;
 /**
  * Class represents a configuration of connection to third party OF controller
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 @lombok.AllArgsConstructor(staticName = "create")

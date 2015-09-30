@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * List of trhid party controllers connected to ODL node
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class ClientList {

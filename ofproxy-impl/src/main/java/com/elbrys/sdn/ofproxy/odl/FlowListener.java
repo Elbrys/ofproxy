@@ -47,7 +47,7 @@ import com.elbrys.sdn.ofproxy.odl.events.FlowRemovedEvent;
  * ODL FLow event listener Current version supports only forwarding of
  * FlowRemoved messages.
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public class FlowListener implements SalFlowListener {

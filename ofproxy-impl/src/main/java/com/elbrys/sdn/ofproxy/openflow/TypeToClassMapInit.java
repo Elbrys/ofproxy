@@ -53,12 +53,13 @@ import com.elbrys.sdn.ofproxy.openflow.protocol.OF10FeaturesRequestMessage;
  * Class represents mapping between OF message type and class representing the
  * message
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class TypeToClassMapInit {
 
     public static void initializeTypeToClassMap(final Map<TypeToClassKey, Class<?>> messageClassMap) {
+        // TOD implement commented OF messages
         // init OF v1.0 mapping
         TypeToClassInitHelper helper = 
                 new TypeToClassInitHelper(EncodeConstants.OF10_VERSION_ID, messageClassMap);

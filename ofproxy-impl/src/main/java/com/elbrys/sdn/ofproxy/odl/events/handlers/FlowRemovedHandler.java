@@ -48,7 +48,7 @@ import com.elbrys.sdn.ofproxy.openflow.ClientList;
 /**
  * ODL Flow removed event handler
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class FlowRemovedHandler {

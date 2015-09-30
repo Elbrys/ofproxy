@@ -41,7 +41,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 /**
  * ODL PacketIn event
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 @lombok.AllArgsConstructor(staticName = "create")

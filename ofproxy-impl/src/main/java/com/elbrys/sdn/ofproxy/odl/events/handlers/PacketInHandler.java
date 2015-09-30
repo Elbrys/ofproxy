@@ -53,7 +53,7 @@ import com.elbrys.sdn.ofproxy.openflow.ClientList;
 /**
  * ODL OacketIn event handler
  * 
- * @author igork
+ * @author Igor Kondrakhin
  * 
  */
 public final class PacketInHandler {
